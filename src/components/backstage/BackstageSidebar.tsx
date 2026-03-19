@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+import { useAuth } from '@/contexts/AuthContext';
+
 const NAV = [
   {
     label: 'Dashboard',
@@ -36,6 +38,7 @@ const NAV = [
 
 export function BackstageSidebar() {
   const pathname = usePathname();
+  const { user, logout } = useAuth();
 
   function isActive(href: string, exact?: boolean) {
     if (href === '/backstage') return pathname === '/backstage';
@@ -107,24 +110,22 @@ export function BackstageSidebar() {
       <div className="flex flex-shrink-0 items-center justify-between border-t border-zinc-800/50 bg-zinc-950/50 px-5 py-4 transition-colors hover:bg-zinc-900/50">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-zinc-800 ring-2 ring-zinc-900">
-            <svg className="h-4 w-4 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
+            <span className="font-sans text-xs font-bold text-white uppercase">{user?.nome?.[0] || 'V'}</span>
           </div>
           <div className="flex flex-col">
-            <span className="font-sans text-sm font-medium text-zinc-200">Administrador</span>
-            <span className="font-sans text-[11px] text-zinc-500">nied@unicamp.br</span>
+            <span className="font-sans text-sm font-medium text-zinc-200 line-clamp-1 truncate block">{user?.nome || 'Carregando...'}</span>
+            <span className="font-sans text-[11px] text-zinc-500 uppercase">{user?.role}</span>
           </div>
         </div>
-        <Link
-          href="/login"
-          className="rounded-lg p-2 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-red-400"
+        <button
+          onClick={logout}
+          className="rounded-lg p-2 text-zinc-500 cursor-pointer transition-colors hover:bg-zinc-800 hover:text-red-400"
           title="Encerrar sessão"
         >
           <svg className="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
           </svg>
-        </Link>
+        </button>
       </div>
       
     </aside>

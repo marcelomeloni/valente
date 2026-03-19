@@ -6,9 +6,12 @@ import { Footer } from './Footer';
 
 export function NavigationWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isBackstageOrLogin = pathname?.startsWith('/backstage') || pathname?.startsWith('/login');
+  const isExcludedRoute = 
+    pathname?.startsWith('/backstage') || 
+    pathname?.startsWith('/login') || 
+    pathname?.startsWith('/admin');
 
-  if (isBackstageOrLogin) {
+  if (isExcludedRoute) {
     return <main className="flex-1">{children}</main>;
   }
 

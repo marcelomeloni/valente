@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Terminal as TerminalIcon, X, RotateCcw } from 'lucide-react';
 import { createInitialState, runCommand, InterpreterState, RunResult } from './interpreter';
 import { LogoCanvas, CANVAS_SIZE } from './LogoCanvas';
 import { LogoTerminal } from './LogoTerminal';
@@ -39,81 +41,70 @@ export function LogoModal({ isOpen, onClose }: LogoModalProps) {
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4 md:p-6"
-      style={{ backgroundColor: 'rgba(0, 0, 0, 0.88)' }}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-    >
-      <div
-        className="flex h-[92dvh] w-full flex-col overflow-hidden rounded-t-2xl sm:h-[88vh] sm:max-w-3xl sm:rounded-2xl md:max-w-5xl"
-        style={{ backgroundColor: '#000000', border: '1px solid #9cd068' }}
-      >
-
-        {/* Header */}
-        <div
-          className="flex flex-shrink-0 items-center justify-between px-4 py-2.5 sm:px-5 sm:py-3"
-          style={{ backgroundColor: '#005500', borderBottom: '1px solid #9cd068' }}
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4 md:p-6 bg-black/60 backdrop-blur-sm"
+          onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
         >
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="flex gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full sm:h-3 sm:w-3" style={{ backgroundColor: '#ff5f56' }} />
-              <span className="h-2.5 w-2.5 rounded-full sm:h-3 sm:w-3" style={{ backgroundColor: '#ffbd2e' }} />
-              <span className="h-2.5 w-2.5 rounded-full sm:h-3 sm:w-3" style={{ backgroundColor: '#27c93f' }} />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="flex h-[92dvh] w-full flex-col overflow-hidden rounded-t-3xl sm:h-[88vh] sm:max-w-4xl sm:rounded-2xl md:max-w-6xl shadow-2xl bg-zinc-950 border border-zinc-800"
+          >
+            {/* Header Mac-Style */}
+            <div className="flex flex-shrink-0 items-center justify-between px-4 py-3 bg-zinc-900/80 border-b border-zinc-800">
+              <div className="flex items-center gap-4">
+                <div className="flex gap-2">
+                  <button onClick={onClose} className="group flex h-3 w-3 items-center justify-center rounded-full bg-red-500 hover:bg-red-600 transition-colors">
+                    <X className="h-2 w-2 opacity-0 group-hover:opacity-100 text-red-950" />
+                  </button>
+                  <div className="h-3 w-3 rounded-full bg-yellow-500" />
+                  <div className="h-3 w-3 rounded-full bg-green-500" />
+                </div>
+                <div className="flex items-center gap-2 px-2">
+                  <TerminalIcon className="h-4 w-4 text-zinc-400" />
+                  <span className="text-xs font-medium tracking-wider text-zinc-400 font-sans uppercase">
+                    Ambiente Logo Interativo
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handleReset}
+                  className="group flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-zinc-400 transition-all hover:bg-zinc-800 hover:text-zinc-200"
+                  title="Reiniciar Canvas"
+                >
+                  <RotateCcw className="h-3.5 w-3.5 transition-transform group-active:-rotate-90" />
+                  <span className="hidden sm:inline">Reset</span>
+                </button>
+              </div>
             </div>
-            <span
-              className="ml-1 text-xs font-bold tracking-widest sm:ml-2 sm:text-sm"
-              style={{ fontFamily: "'Courier New', monospace", color: '#9cd068' }}
-            >
-              LOGO
-            </span>
-      
-          </div>
 
-          <div className="flex items-center gap-4">
-            <button
-              onClick={handleReset}
-              className="text-xs tracking-widest transition-opacity hover:opacity-60 active:opacity-60"
-              style={{ fontFamily: "'Courier New', monospace", color: '#ffffcc' }}
-            >
-              REINICIAR
-            </button>
-            <button
-              onClick={onClose}
-              className="text-xl leading-none transition-opacity hover:opacity-60 active:opacity-60"
-              style={{ color: '#ffffcc' }}
-              aria-label="Fechar"
-            >
-              ×
-            </button>
-          </div>
-        </div>
+            {/* Body */}
+            <div className="flex flex-1 flex-col overflow-hidden md:flex-row bg-[#09090b]">
+              {/* Canvas Area */}
+              <div className="flex h-[45%] flex-shrink-0 items-center justify-center p-4 md:h-auto md:flex-1 md:p-8 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-zinc-900 to-[#09090b]">
+                <div className="h-full w-full rounded-xl overflow-hidden shadow-inner border border-white/5 bg-black/50 backdrop-blur-sm">
+                  <LogoCanvas state={logoState} />
+                </div>
+              </div>
 
-        {/* Body
-            Mobile  : canvas (45% height) on top, terminal below, separated by top border
-            Desktop : canvas fills left flex-1, terminal is fixed-width right sidebar
-        */}
-        <div className="flex flex-1 flex-col overflow-hidden md:flex-row">
-
-          {/* Canvas */}
-          <div
-            className="flex h-[44%] flex-shrink-0 items-center justify-center p-3 md:h-auto md:flex-1 md:p-6"
-            style={{ backgroundColor: '#000000' }}
-          >
-            <LogoCanvas state={logoState} />
-          </div>
-
-          {/* Terminal */}
-          <div
-            className="flex-1 overflow-hidden md:w-72 md:flex-none xl:w-80"
-            style={{ borderTop: '1px solid #9cd068', borderLeft: '1px solid #9cd068' }}
-          >
-            <LogoTerminal onRun={handleRun} />
-          </div>
-        </div>
-      </div>
-    </div>
+              {/* Terminal Area */}
+              <div className="flex-1 overflow-hidden md:w-80 md:flex-none xl:w-96 border-t border-zinc-800 md:border-t-0 md:border-l bg-zinc-950/50 shadow-[-10px_0_30px_-15px_rgba(0,0,0,0.5)]">
+                <LogoTerminal onRun={handleRun} />
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

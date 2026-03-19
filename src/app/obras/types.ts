@@ -1,10 +1,19 @@
 export type ObraCategoria =
+  | 'artigo_periodico'
+  | 'artigo_evento'
+  | 'editorial'
   | 'livro'
-  | 'artigo'
-  | 'capitulo'
-  | 'tese'
-  | 'revista'
-  | 'relatorio';
+  | 'capitulo_livro'
+  | 'tese_doutorado'
+  | 'dissertacao_mestrado'
+  | 'tcc'
+  | 'anais_evento'
+  | 'relato_experiencia'
+  | 'resumo_expandido'
+  | 'manual'
+  | 'cartilha'
+  | 'relatorio_tecnico'
+  | 'outro';
 
 export interface Obra {
   slug: string;
@@ -13,151 +22,50 @@ export interface Obra {
   temas: string[];
   ano: number;
   autores: string[];
-  publicacao?: string; // journal, editora, etc.
+  publicacao?: string;
   resumo?: string;
+  link_externo?: string;
+  pdf?: string;
+  id?: number;
 }
 
 export const CATEGORIAS: { value: ObraCategoria | 'todas'; label: string }[] = [
-  { value: 'todas', label: 'Todas' },
+  { value: 'todas', label: 'Todas as Categorias' },
+  { value: 'artigo_periodico', label: 'Artigo de Periódico' },
+  { value: 'artigo_evento', label: 'Artigo de Evento' },
+  { value: 'editorial', label: 'Editorial' },
   { value: 'livro', label: 'Livro' },
-  { value: 'artigo', label: 'Artigo' },
-  { value: 'capitulo', label: 'Capítulo de livro' },
-  { value: 'tese', label: 'Tese / Dissertação' },
-  { value: 'revista', label: 'Revista' },
-  { value: 'relatorio', label: 'Relatório técnico' },
+  { value: 'capitulo_livro', label: 'Capítulo de Livro' },
+  { value: 'tese_doutorado', label: 'Tese de Doutorado' },
+  { value: 'dissertacao_mestrado', label: 'Dissertação de Mestrado' },
+  { value: 'tcc', label: 'Trabalho de Conclusão de Curso' },
+  { value: 'anais_evento', label: 'Anais de Evento' },
+  { value: 'relato_experiencia', label: 'Relato de Experiência' },
+  { value: 'resumo_expandido', label: 'Resumo Expandido' },
+  { value: 'manual', label: 'Manual' },
+  { value: 'cartilha', label: 'Cartilha' },
+  { value: 'relatorio_tecnico', label: 'Relatório Técnico' },
+  { value: 'outro', label: 'Outro' },
 ];
 
-export const TEMAS_DISPONIVEIS = [
-  'Construcionismo',
-  'Espiral de Aprendizagem',
-  'Linguagem Logo',
-  'Formação de Professores',
-  'Educação Especial',
-  'Educação a Distância',
-  'Sistemas Sócio-Enativos',
-  'Pensamento Computacional',
-  'Robótica Pedagógica',
-  'Informática na Educação',
-];
+export const CATEGORIA_LABEL: Record<string, string> = Object.fromEntries(
+  CATEGORIAS.filter(c => c.value !== 'todas').map(c => [c.value, c.label])
+);
 
-// Mock — replace with DB/CMS fetch
-export const OBRAS_MOCK: Obra[] = [
-  {
-    slug: 'espiral-da-espiral-de-aprendizagem',
-    titulo: 'A Espiral da Espiral de Aprendizagem: o processo de compreensão do papel das tecnologias de informação e comunicação na educação',
-    categoria: 'tese',
-    temas: ['Espiral de Aprendizagem', 'Informática na Educação', 'Construcionismo'],
-    ano: 2005,
-    autores: ['José Armando Valente'],
-    publicacao: 'Tese de Livre Docência · UNICAMP · Instituto de Artes',
-    resumo: 'Análise e discussão do processo de compreensão do papel das TIC na educação, articulando o ciclo descrição-execução-reflexão-depuração e a espiral de aprendizagem.',
-  },
-  {
-    slug: 'liberando-a-mente',
-    titulo: 'Liberando a Mente: computadores na educação especial',
-    categoria: 'livro',
-    temas: ['Educação Especial', 'Linguagem Logo', 'Construcionismo'],
-    ano: 1991,
-    autores: ['José Armando Valente'],
-    publicacao: 'UNICAMP/NIED',
-  },
-  {
-    slug: 'computadores-e-conhecimento',
-    titulo: 'Computadores e Conhecimento: repensando a educação',
-    categoria: 'livro',
-    temas: ['Informática na Educação', 'Construcionismo', 'Formação de Professores'],
-    ano: 1993,
-    autores: ['José Armando Valente (org.)'],
-    publicacao: 'UNICAMP/NIED',
-  },
-  {
-    slug: 'o-computador-na-sociedade-do-conhecimento',
-    titulo: 'O Computador na Sociedade do Conhecimento',
-    categoria: 'livro',
-    temas: ['Informática na Educação', 'Formação de Professores'],
-    ano: 1999,
-    autores: ['José Armando Valente (org.)'],
-    publicacao: 'UNICAMP/NIED · Coleção Informática para a Mudança na Educação',
-  },
-  {
-    slug: 'a-espiral-da-aprendizagem-e-as-tic',
-    titulo: 'A espiral da aprendizagem e as tecnologias da informação e comunicação: repensando conceitos',
-    categoria: 'capitulo',
-    temas: ['Espiral de Aprendizagem', 'Informática na Educação'],
-    ano: 2002,
-    autores: ['José Armando Valente'],
-    publicacao: 'In: Joly, M. C. R. A. (org.). A Tecnologia no Ensino',
-  },
-  {
-    slug: 'usos-do-computador-na-educacao',
-    titulo: 'Usos do computador na educação',
-    categoria: 'capitulo',
-    temas: ['Informática na Educação', 'Linguagem Logo'],
-    ano: 1991,
-    autores: ['José Armando Valente'],
-    publicacao: 'In: Valente, J. A. (org.). Liberando a Mente',
-  },
-  {
-    slug: 'logo-mais-do-que-uma-linguagem-de-programacao',
-    titulo: 'Logo: mais do que uma linguagem de programação',
-    categoria: 'capitulo',
-    temas: ['Linguagem Logo', 'Construcionismo', 'Pensamento Computacional'],
-    ano: 1991,
-    autores: ['José Armando Valente'],
-    publicacao: 'In: Valente, J. A. (org.). Liberando a Mente',
-  },
-  {
-    slug: 'formar-para-inovar',
-    titulo: 'Formar para Inovar com as Tecnologias de Informação e Comunicação',
-    categoria: 'artigo',
-    temas: ['Formação de Professores', 'Informática na Educação'],
-    ano: 2003,
-    autores: ['José Armando Valente', 'Roseli de Deus Lopes'],
-    publicacao: 'Revista Brasileira de Educação',
-  },
-  {
-    slug: 'o-estar-junto-virtual',
-    titulo: 'O "Estar Junto Virtual" como uma abordagem de educação a distância',
-    categoria: 'artigo',
-    temas: ['Educação a Distância', 'Formação de Professores'],
-    ano: 2000,
-    autores: ['José Armando Valente'],
-    publicacao: 'Boletim do Programa Salto para o Futuro',
-  },
-  {
-    slug: 'analise-dos-diferentes-tipos-de-software',
-    titulo: 'Análise dos diferentes tipos de software usados na educação',
-    categoria: 'capitulo',
-    temas: ['Informática na Educação', 'Espiral de Aprendizagem'],
-    ano: 1999,
-    autores: ['José Armando Valente'],
-    publicacao: 'In: Valente, J. A. (org.). O Computador na Sociedade do Conhecimento',
-  },
-  {
-    slug: 'nied-memo-1',
-    titulo: 'NIED Memo Nº 1: Proposta do Projeto EDUCOM na UNICAMP',
-    categoria: 'relatorio',
-    temas: ['Informática na Educação', 'Construcionismo'],
-    ano: 1983,
-    autores: ['José Armando Valente', 'Ann Berger Valente'],
-    publicacao: 'NIED · UNICAMP',
-  },
-  {
-    slug: 'sistemas-socio-enativos',
-    titulo: 'Sistemas Sócio-Enativos: investigando novas dimensões da interação humano-computador',
-    categoria: 'artigo',
-    temas: ['Sistemas Sócio-Enativos', 'Informática na Educação'],
-    ano: 2017,
-    autores: ['José Armando Valente', 'M. C. C. Baranauskas'],
-    publicacao: 'Projeto Temático FAPESP',
-  },
-  {
-    slug: 'robotica-pedagogica',
-    titulo: 'Robótica Pedagógica: a informática na educação pelo avesso',
-    categoria: 'artigo',
-    temas: ['Robótica Pedagógica', 'Construcionismo', 'Pensamento Computacional'],
-    ano: 1993,
-    autores: ['José Armando Valente'],
-    publicacao: 'NIED Informativo · UNICAMP',
-  },
-];
+export const CATEGORIA_COLOR: Record<string, string> = {
+  artigo_periodico: 'text-emerald-600 bg-emerald-50 border-emerald-100',
+  artigo_evento: 'text-teal-600 bg-teal-50 border-teal-100',
+  editorial: 'text-orange-600 bg-orange-50 border-orange-100',
+  livro: 'text-blue-600 bg-blue-50 border-blue-100',
+  capitulo_livro: 'text-violet-600 bg-violet-50 border-violet-100',
+  tese_doutorado: 'text-amber-600 bg-amber-50 border-amber-100',
+  dissertacao_mestrado: 'text-yellow-600 bg-yellow-50 border-yellow-100',
+  tcc: 'text-lime-600 bg-lime-50 border-lime-100',
+  anais_evento: 'text-cyan-600 bg-cyan-50 border-cyan-100',
+  relato_experiencia: 'text-pink-600 bg-pink-50 border-pink-100',
+  resumo_expandido: 'text-rose-600 bg-rose-50 border-rose-100',
+  manual: 'text-indigo-600 bg-indigo-50 border-indigo-100',
+  cartilha: 'text-fuchsia-600 bg-fuchsia-50 border-fuchsia-100',
+  relatorio_tecnico: 'text-zinc-600 bg-zinc-100 border-zinc-200',
+  outro: 'text-stone-600 bg-stone-100 border-stone-200',
+};

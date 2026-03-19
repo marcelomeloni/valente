@@ -3,7 +3,26 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CATEGORIAS } from '@/app/obras/types';
+export const CATEGORIAS = [
+  { value: 'todas', label: 'Todas as Categorias' },
+  { value: 'artigo_periodico', label: 'Artigo de Periódico' },
+  { value: 'artigo_evento', label: 'Artigo de Evento' },
+  { value: 'editorial', label: 'Editorial' },
+  { value: 'livro', label: 'Livro' },
+  { value: 'capitulo_livro', label: 'Capítulo de Livro' },
+  { value: 'tese_doutorado', label: 'Tese de Doutorado' },
+  { value: 'dissertacao_mestrado', label: 'Dissertação de Mestrado' },
+  { value: 'tcc', label: 'Trabalho de Conclusão de Curso' },
+  { value: 'anais_evento', label: 'Anais de Evento' },
+  { value: 'relato_experiencia', label: 'Relato de Experiência' },
+  { value: 'resumo_expandido', label: 'Resumo Expandido' },
+  { value: 'manual', label: 'Manual' },
+  { value: 'cartilha', label: 'Cartilha' },
+  { value: 'relatorio_tecnico', label: 'Relatório Técnico' },
+  { value: 'outro', label: 'Outro' }
+] as const;
+
+export type Categoria = typeof CATEGORIAS[number]['value'];
 import { TagInput } from '@/components/ui/TagInput';
 import type { ObraFormData } from '../ObraForm';
 
@@ -35,7 +54,7 @@ export function Step1Info({ form, updateForm, onNext }: Step1Props) {
     return !form[field as keyof ObraFormData];
   };
 
-  const getBorderCls = (isError: boolean) => 
+  const getBorderCls = (isError: boolean) =>
     isError ? 'border-red-300 focus:border-red-500' : 'border-zinc-200 focus:border-unicamp';
 
   return (
@@ -48,7 +67,7 @@ export function Step1Info({ form, updateForm, onNext }: Step1Props) {
           Preencha os dados principais para identificar a obra no acervo.
         </p>
       </div>
-      
+
       <div className="grid grid-cols-1 gap-6">
         <div>
           <label className={labelCls}>
@@ -129,7 +148,7 @@ export function Step1Info({ form, updateForm, onNext }: Step1Props) {
             Autores <span className="text-unicamp">*</span>
           </label>
           <div className={hasError('autores_array') ? 'rounded-lg border border-red-300' : ''}>
-             <TagInput
+            <TagInput
               tags={form.autores}
               setTags={(tags) => {
                 updateForm({ autores: tags });

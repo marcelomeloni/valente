@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { ObraCategoria, CATEGORIAS, TEMAS_DISPONIVEIS } from './types';
+import { ObraCategoria, CATEGORIAS } from './types';
 
 export interface FiltersState {
   categoria: ObraCategoria | 'todas';
   temas: string[];
+  autores: string[];
   anoMin: string;
   anoMax: string;
 }
@@ -13,6 +14,7 @@ export interface FiltersState {
 export const FILTERS_INICIAL: FiltersState = {
   categoria: 'todas',
   temas: [],
+  autores: [],
   anoMin: '',
   anoMax: '',
 };
@@ -22,16 +24,26 @@ const ANOS = Array.from(
   (_, i) => new Date().getFullYear() - i
 );
 
-const TEMAS_VISIBLE_DEFAULT = 5;
+const ITEMS_VISIBLE_DEFAULT = 5;
 
 interface ObraFiltersProps {
   filters: FiltersState;
   onChange: (f: FiltersState) => void;
   totalResultados: number;
+  // Arrays dinâmicos vindos da API
+  temasDisponiveis: string[];
+  autoresDisponiveis: string[];
 }
 
-export function ObraFilters({ filters, onChange, totalResultados }: ObraFiltersProps) {
+export function ObraFilters({ 
+  filters, 
+  onChange, 
+  totalResultados,
+  temasDisponiveis,
+  autoresDisponiveis
+}: ObraFiltersProps) {
   const [temasExpanded, setTemasExpanded] = useState(false);
+  const [autoresExpanded, setAutoresExpanded] = useState(false);
 
   function setCategoria(v: ObraCategoria | 'todas') {
     onChange({ ...filters, categoria: v });
@@ -45,6 +57,14 @@ export function ObraFilters({ filters, onChange, totalResultados }: ObraFiltersP
     });
   }
 
+  function toggleAutor(autor: string) {
+    const already = filters.autores.includes(autor);
+    onChange({
+      ...filters,
+      autores: already ? filters.autores.filter((a) => a !== autor) : [...filters.autores, autor],
+    });
+  }
+
   function clearAll() {
     onChange(FILTERS_INICIAL);
   }
@@ -52,25 +72,32 @@ export function ObraFilters({ filters, onChange, totalResultados }: ObraFiltersP
   const activeCount =
     (filters.categoria !== 'todas' ? 1 : 0) +
     filters.temas.length +
+    filters.autores.length +
     (filters.anoMin ? 1 : 0) +
     (filters.anoMax ? 1 : 0);
 
-  // Always show selected temas + up to TEMAS_VISIBLE_DEFAULT
+  // --- Helpers to show 5 items + selected ones by default ---
   const visibleTemas = temasExpanded
-    ? TEMAS_DISPONIVEIS
-    : TEMAS_DISPONIVEIS.slice(0, TEMAS_VISIBLE_DEFAULT).concat(
-        // make sure selected temas not in first 5 are still shown
-        TEMAS_DISPONIVEIS.slice(TEMAS_VISIBLE_DEFAULT).filter((t) =>
-          filters.temas.includes(t)
-        )
+    ? temasDisponiveis
+    : temasDisponiveis.slice(0, ITEMS_VISIBLE_DEFAULT).concat(
+        temasDisponiveis.slice(ITEMS_VISIBLE_DEFAULT).filter((t) => filters.temas.includes(t))
       );
 
-  const hiddenCount =
-    TEMAS_DISPONIVEIS.length -
-    TEMAS_VISIBLE_DEFAULT -
-    TEMAS_DISPONIVEIS.slice(TEMAS_VISIBLE_DEFAULT).filter((t) =>
-      filters.temas.includes(t)
-    ).length;
+  const hiddenTemasCount =
+    temasDisponiveis.length -
+    ITEMS_VISIBLE_DEFAULT -
+    temasDisponiveis.slice(ITEMS_VISIBLE_DEFAULT).filter((t) => filters.temas.includes(t)).length;
+
+  const visibleAutores = autoresExpanded
+    ? autoresDisponiveis
+    : autoresDisponiveis.slice(0, ITEMS_VISIBLE_DEFAULT).concat(
+        autoresDisponiveis.slice(ITEMS_VISIBLE_DEFAULT).filter((a) => filters.autores.includes(a))
+      );
+
+  const hiddenAutoresCount =
+    autoresDisponiveis.length -
+    ITEMS_VISIBLE_DEFAULT -
+    autoresDisponiveis.slice(ITEMS_VISIBLE_DEFAULT).filter((a) => filters.autores.includes(a)).length;
 
   const selectCls =
     'w-full appearance-none rounded-lg border border-zinc-200 bg-white px-3 py-2 pr-8 font-sans text-sm text-zinc-700 outline-none transition-colors focus:border-unicamp focus:ring-2 focus:ring-unicamp/10 cursor-pointer';
@@ -103,15 +130,6 @@ export function ObraFilters({ filters, onChange, totalResultados }: ObraFiltersP
         )}
       </div>
 
-      {/* ── Result count ── */}
-      <div className="rounded-xl border border-zinc-100 bg-zinc-50 px-4 py-3">
-        <p className="font-sans text-sm text-zinc-500">
-          <span className="font-serif text-xl font-bold text-zinc-900">{totalResultados}</span>
-          {'  '}
-          {totalResultados === 1 ? 'obra encontrada' : 'obras encontradas'}
-        </p>
-      </div>
-
       {/* ── Categoria ── */}
       <FilterSection title="Categoria">
         <div className="flex flex-col gap-0.5">
@@ -139,65 +157,131 @@ export function ObraFilters({ filters, onChange, totalResultados }: ObraFiltersP
 
       <div className="h-px bg-zinc-100" />
 
-      {/* ── Temas ── */}
-      <FilterSection title="Temas">
-        <div className="flex flex-col gap-0.5">
-          {visibleTemas.map((tema) => {
-            const active = filters.temas.includes(tema);
-            return (
+      {/* ── Autores ── */}
+      {autoresDisponiveis.length > 0 && (
+        <>
+          <FilterSection title="Autores">
+            <div className="flex flex-col gap-0.5">
+              {visibleAutores.map((autor) => {
+                const active = filters.autores.includes(autor);
+                return (
+                  <button
+                    key={autor}
+                    onClick={() => toggleAutor(autor)}
+                    className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-left font-sans text-sm transition-all duration-100 ${
+                      active
+                        ? 'bg-unicamp/[0.07] font-semibold text-unicamp'
+                        : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
+                    }`}
+                  >
+                    {/* Checkbox */}
+                    <span
+                      className={`flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded border transition-colors duration-100 ${
+                        active ? 'border-unicamp bg-unicamp' : 'border-zinc-300 bg-white'
+                      }`}
+                    >
+                      {active && (
+                        <svg className="h-2 w-2 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </span>
+                    <span className="leading-tight">{autor}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Ver mais / menos */}
+            {!autoresExpanded && hiddenAutoresCount > 0 && (
               <button
-                key={tema}
-                onClick={() => toggleTema(tema)}
-                className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-left font-sans text-sm transition-all duration-100 ${
-                  active
-                    ? 'bg-unicamp/[0.07] font-semibold text-unicamp'
-                    : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
-                }`}
+                onClick={() => setAutoresExpanded(true)}
+                className="mt-1 flex items-center gap-1.5 px-3 font-sans text-xs font-medium text-zinc-500 transition-colors hover:text-zinc-900"
               >
-                {/* Checkbox */}
-                <span
-                  className={`flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded border transition-colors duration-100 ${
-                    active ? 'border-unicamp bg-unicamp' : 'border-zinc-300 bg-white'
-                  }`}
-                >
-                  {active && (
-                    <svg className="h-2 w-2 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  )}
-                </span>
-                <span className="leading-tight">{tema}</span>
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                Ver mais {hiddenAutoresCount} {hiddenAutoresCount === 1 ? 'autor' : 'autores'}
               </button>
-            );
-          })}
-        </div>
+            )}
+            {autoresExpanded && (
+              <button
+                onClick={() => setAutoresExpanded(false)}
+                className="mt-1 flex items-center gap-1.5 px-3 font-sans text-xs font-medium text-zinc-500 transition-colors hover:text-zinc-900"
+              >
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" />
+                </svg>
+                Ver menos
+              </button>
+            )}
+          </FilterSection>
+          <div className="h-px bg-zinc-100" />
+        </>
+      )}
 
-        {/* Ver mais / menos */}
-        {!temasExpanded && hiddenCount > 0 && (
-          <button
-            onClick={() => setTemasExpanded(true)}
-            className="mt-1 flex items-center gap-1.5 px-3 font-sans text-xs font-medium text-zinc-500 transition-colors hover:text-zinc-900"
-          >
-            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
-            Ver mais {hiddenCount} {hiddenCount === 1 ? 'tema' : 'temas'}
-          </button>
-        )}
-        {temasExpanded && (
-          <button
-            onClick={() => setTemasExpanded(false)}
-            className="mt-1 flex items-center gap-1.5 px-3 font-sans text-xs font-medium text-zinc-500 transition-colors hover:text-zinc-900"
-          >
-            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" />
-            </svg>
-            Ver menos
-          </button>
-        )}
-      </FilterSection>
+      {/* ── Temas ── */}
+      {temasDisponiveis.length > 0 && (
+        <>
+          <FilterSection title="Temas">
+            <div className="flex flex-col gap-0.5">
+              {visibleTemas.map((tema) => {
+                const active = filters.temas.includes(tema);
+                return (
+                  <button
+                    key={tema}
+                    onClick={() => toggleTema(tema)}
+                    className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-left font-sans text-sm transition-all duration-100 ${
+                      active
+                        ? 'bg-unicamp/[0.07] font-semibold text-unicamp'
+                        : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
+                    }`}
+                  >
+                    {/* Checkbox */}
+                    <span
+                      className={`flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded border transition-colors duration-100 ${
+                        active ? 'border-unicamp bg-unicamp' : 'border-zinc-300 bg-white'
+                      }`}
+                    >
+                      {active && (
+                        <svg className="h-2 w-2 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </span>
+                    <span className="leading-tight">{tema}</span>
+                  </button>
+                );
+              })}
+            </div>
 
-      <div className="h-px bg-zinc-100" />
+            {/* Ver mais / menos */}
+            {!temasExpanded && hiddenTemasCount > 0 && (
+              <button
+                onClick={() => setTemasExpanded(true)}
+                className="mt-1 flex items-center gap-1.5 px-3 font-sans text-xs font-medium text-zinc-500 transition-colors hover:text-zinc-900"
+              >
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                Ver mais {hiddenTemasCount} {hiddenTemasCount === 1 ? 'tema' : 'temas'}
+              </button>
+            )}
+            {temasExpanded && (
+              <button
+                onClick={() => setTemasExpanded(false)}
+                className="mt-1 flex items-center gap-1.5 px-3 font-sans text-xs font-medium text-zinc-500 transition-colors hover:text-zinc-900"
+              >
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" />
+                </svg>
+                Ver menos
+              </button>
+            )}
+          </FilterSection>
+          <div className="h-px bg-zinc-100" />
+        </>
+      )}
 
       {/* ── Período ── */}
       <FilterSection title="Período">
