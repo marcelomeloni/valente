@@ -1,15 +1,17 @@
 export function Footer() {
   return (
-    <footer className="w-full border-t border-zinc-200 bg-zinc-50 py-8 mt-auto">
-      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 md:flex-row">
-        <p className="text-sm text-zinc-500">
-          © {new Date().getFullYear()} NIED - Unicamp. Acervo Prof. José Armando Valente.
+    <footer className="mt-auto w-full border-t border-zinc-100 bg-white py-8">
+      <div className="mx-auto flex max-w-[90rem] flex-col items-center justify-between gap-4 px-5 sm:px-8 lg:px-12 md:flex-row">
+        <p className="font-sans text-sm text-zinc-400">
+          &copy; {new Date().getFullYear()} Acervo Valente.
         </p>
-        <div className="flex gap-4 text-sm text-zinc-500">
-          <a href="https://www.nied.unicamp.br/" target="_blank" rel="noreferrer" className="hover:text-unicamp transition-colors">
-            Sobre o NIED
-          </a>
-        </div>
+
+        <a 
+          href="#top" 
+          className="font-sans text-sm font-medium text-zinc-400 transition-colors hover:text-zinc-800"
+        >
+          Voltar ao topo
+        </a>
       </div>
     </footer>
   );

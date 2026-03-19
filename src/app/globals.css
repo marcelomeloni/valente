@@ -26,3 +26,40 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ── Custom filter sidebar scrollbar ─────────────────────────────────────── */
+
+.filters-scrollbar {
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #e4e4e7 transparent;
+}
+
+.filters-scrollbar:hover {
+  scrollbar-color: #d4d4d8 transparent;
+}
+
+/* Chromium / Safari */
+.filters-scrollbar::-webkit-scrollbar {
+  width: 3px;
+}
+
+.filters-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.filters-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #e4e4e7;
+  border-radius: 99px;
+  transition: background-color 0.15s ease;
+}
+
+.filters-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: #a1a1aa;
+}
+
+/* On active interaction, flash unicamp red */
+.filters-scrollbar:active::-webkit-scrollbar-thumb,
+.filters-scrollbar:focus-within::-webkit-scrollbar-thumb {
+  background-color: rgba(253, 0, 2, 0.35);
+}
