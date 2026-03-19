@@ -1,17 +1,8 @@
 // app/backstage/obras/page.tsx
 import Link from 'next/link';
-import { ObraCategoria } from '../../obras/types';
+import { CATEGORIA_LABEL } from '../../obras/types';
 import { DeleteObraButton } from '@/components/ui/DeleteButton';
 import { obrasService } from '@/services/obrasService';
-
-const CATEGORIA_LABEL: Record<ObraCategoria, string> = {
-  livro: 'Livro',
-  artigo: 'Artigo',
-  capitulo: 'Capítulo',
-  tese: 'Tese',
-  revista: 'Revista',
-  relatorio: 'Relatório',
-};
 
 const ITEMS_PER_PAGE = 10;
 
@@ -23,7 +14,7 @@ export default async function BackstageObras({ searchParams }: Props) {
   const params = await searchParams;
   const currentPage = Number(params.page) || 1;
 
-  let backendObras = [];
+  let backendObras: any[] = [];
   try { backendObras = await obrasService.getAll(); } catch {}
 
   const todasObras = [...backendObras].sort((a, b) => b.ano - a.ano);
@@ -59,7 +50,7 @@ export default async function BackstageObras({ searchParams }: Props) {
             <thead>
               <tr className="border-b border-zinc-100 bg-zinc-50/50">
                 <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-widest text-zinc-500">Título</th>
-                <th className="hidden px-4 py-4 text-[11px] font-semibold uppercase tracking-widest text-zinc-500 sm:table-cell">Tipo</th>
+                <th className="hidden px-4 py-4 text-[11px] font-semibold uppercase tracking-widest text-zinc-500 sm:table-cell">Categoria</th>
                 <th className="hidden px-4 py-4 text-[11px] font-semibold uppercase tracking-widest text-zinc-500 md:table-cell">Ano</th>
                 <th className="px-6 py-4 text-right text-[11px] font-semibold uppercase tracking-widest text-zinc-500">Ações</th>
               </tr>

@@ -37,8 +37,22 @@ export default function ObrasPage() {
         ]);
 
         setObras(obrasList);
-        setTemasDisponiveis(temasList.map((t: TemaResponse) => t.nome));
-        setAutoresDisponiveis(autoresList.map((a: AutorResponse) => a.nome));
+
+        // Contar frequência dos temas no acervo e ordenar por mais usados
+        const temaFreq: Record<string, number> = {};
+        obrasList.forEach((o) => o.temas?.forEach((t: string) => { temaFreq[t] = (temaFreq[t] || 0) + 1; }));
+        const temasOrdenados = temasList
+          .map((t: TemaResponse) => t.nome)
+          .sort((a: string, b: string) => (temaFreq[b] || 0) - (temaFreq[a] || 0));
+        setTemasDisponiveis(temasOrdenados);
+
+        // Contar frequência dos autores e ordenar
+        const autorFreq: Record<string, number> = {};
+        obrasList.forEach((o) => o.autores?.forEach((a: string) => { autorFreq[a] = (autorFreq[a] || 0) + 1; }));
+        const autoresOrdenados = autoresList
+          .map((a: AutorResponse) => a.nome)
+          .sort((a: string, b: string) => (autorFreq[b] || 0) - (autorFreq[a] || 0));
+        setAutoresDisponiveis(autoresOrdenados);
 
       } catch (err) {
         console.error('Erro ao buscar dados do acervo:', err);
@@ -113,6 +127,7 @@ export default function ObrasPage() {
                 totalResultados={filtradas.length}
                 temasDisponiveis={temasDisponiveis}
                 autoresDisponiveis={autoresDisponiveis}
+                obras={obras}
               />
             </div>
           </div>
@@ -235,7 +250,7 @@ export default function ObrasPage() {
               </button>
             </div>
             <div className="flex-1 overflow-y-auto px-5 py-5">
-              <ObraFilters filters={filters} onChange={handleFiltersChange} totalResultados={filtradas.length} temasDisponiveis={temasDisponiveis} autoresDisponiveis={autoresDisponiveis} />
+              <ObraFilters filters={filters} onChange={handleFiltersChange} totalResultados={filtradas.length} temasDisponiveis={temasDisponiveis} autoresDisponiveis={autoresDisponiveis} obras={obras} />
             </div>
             <div className="flex-shrink-0 border-t border-zinc-100 px-5 py-4 bg-zinc-50">
               <button

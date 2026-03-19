@@ -18,6 +18,10 @@ function generateSlug(titulo: string): string {
     .substring(0, 80);
 }
 
+function norm(s: string): string {
+  return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
 export default function NovaObraPage() {
   const router = useRouter();
   const { user } = useAuth();
@@ -42,7 +46,7 @@ export default function NovaObraPage() {
         const trimmed = nomeAutor.trim();
         if (!trimmed) continue;
         const existing = allAutores.find(
-          (a) => a.nome.toLowerCase() === trimmed.toLowerCase()
+          (a) => norm(a.nome) === norm(trimmed)
         );
         if (existing) {
           autorIds.push(existing.id);
@@ -60,7 +64,7 @@ export default function NovaObraPage() {
         const trimmed = nomeTema.trim();
         if (!trimmed) continue;
         const existing = allTemas.find(
-          (t) => t.nome.toLowerCase() === trimmed.toLowerCase()
+          (t) => norm(t.nome) === norm(trimmed)
         );
         if (existing) {
           temaIds.push(existing.id);

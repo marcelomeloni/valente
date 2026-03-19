@@ -1,24 +1,69 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback, KeyboardEvent } from 'react';
-import { filterResults, SearchBarResults, SearchResult } from './SearchBarResults';
+import { SearchBarResults, SearchResult } from './SearchBarResults';
+import { obrasService } from '@/services/obrasService';
+import { CATEGORIA_LABEL } from '@/app/obras/types';
+import { Obra } from '@/app/obras/types';
+
+let obrasCache: Obra[] | null = null;
 
 export function SearchBar() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [open, setOpen] = useState(false);
   const [focusedIdx, setFocusedIdx] = useState(-1);
+  const [allObras, setAllObras] = useState<Obra[]>([]);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Fetch obras once (with cache to avoid re-fetching on every mount)
+  useEffect(() => {
+    async function loadObras() {
+      if (obrasCache) {
+        setAllObras(obrasCache);
+        return;
+      }
+      try {
+        const list = await obrasService.getAll();
+        obrasCache = list;
+        setAllObras(list);
+      } catch (err) {
+        console.error('SearchBar: erro ao carregar obras', err);
+      }
+    }
+    loadObras();
+  }, []);
+
   // Filter on query change
   useEffect(() => {
-    const filtered = filterResults(query);
+    const q = query.toLowerCase().trim();
+    if (!q) {
+      setResults([]);
+      setOpen(false);
+      return;
+    }
+
+    const filtered = allObras
+      .filter((obra) =>
+        obra.titulo.toLowerCase().includes(q) ||
+        obra.autores.some((a) => a.toLowerCase().includes(q)) ||
+        obra.temas.some((t) => t.toLowerCase().includes(q)) ||
+        obra.publicacao?.toLowerCase().includes(q) ||
+        (CATEGORIA_LABEL[obra.categoria] || '').toLowerCase().includes(q)
+      )
+      .slice(0, 6)
+      .map((obra) => ({
+        title: obra.titulo,
+        subtitle: `${CATEGORIA_LABEL[obra.categoria] || obra.categoria} · ${obra.ano} · ${obra.autores[0] || ''}`,
+        href: `/${obra.slug}`,
+      }));
+
     setResults(filtered);
     setFocusedIdx(-1);
-    setOpen(query.trim().length > 0);
-  }, [query]);
+    setOpen(true);
+  }, [query, allObras]);
 
   // Close on outside click
   useEffect(() => {

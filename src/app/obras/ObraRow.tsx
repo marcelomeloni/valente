@@ -1,23 +1,5 @@
 import Link from 'next/link';
-import { Obra, ObraCategoria } from './types';
-
-const CATEGORIA_LABEL: Record<ObraCategoria, string> = {
-  livro: 'Livro',
-  artigo: 'Artigo',
-  capitulo: 'Capítulo',
-  tese: 'Tese',
-  revista: 'Revista',
-  relatorio: 'Relatório',
-};
-
-const CATEGORIA_COLOR: Record<ObraCategoria, string> = {
-  livro: 'text-blue-600 bg-blue-50 border-blue-100',
-  artigo: 'text-emerald-600 bg-emerald-50 border-emerald-100',
-  capitulo: 'text-violet-600 bg-violet-50 border-violet-100',
-  tese: 'text-amber-600 bg-amber-50 border-amber-100',
-  revista: 'text-pink-600 bg-pink-50 border-pink-100',
-  relatorio: 'text-zinc-600 bg-zinc-100 border-zinc-200',
-};
+import { Obra, CATEGORIA_LABEL, CATEGORIA_COLOR } from './types';
 
 interface ObraRowProps {
   obra: Obra;

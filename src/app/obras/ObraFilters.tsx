@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { ObraCategoria, CATEGORIAS } from './types';
+import { useState, useMemo } from 'react';
+import { ObraCategoria, CATEGORIAS, CATEGORIA_LABEL, Obra } from './types';
 
 export interface FiltersState {
   categoria: ObraCategoria | 'todas';
@@ -30,9 +30,9 @@ interface ObraFiltersProps {
   filters: FiltersState;
   onChange: (f: FiltersState) => void;
   totalResultados: number;
-  // Arrays dinâmicos vindos da API
   temasDisponiveis: string[];
   autoresDisponiveis: string[];
+  obras: Obra[];
 }
 
 export function ObraFilters({ 
@@ -40,10 +40,23 @@ export function ObraFilters({
   onChange, 
   totalResultados,
   temasDisponiveis,
-  autoresDisponiveis
+  autoresDisponiveis,
+  obras
 }: ObraFiltersProps) {
   const [temasExpanded, setTemasExpanded] = useState(false);
   const [autoresExpanded, setAutoresExpanded] = useState(false);
+  const [categoriasExpanded, setCategoriasExpanded] = useState(false);
+
+  // Categorias ordenadas por frequência
+  const categoriasOrdenadas = useMemo(() => {
+    const freq: Record<string, number> = {};
+    obras.forEach((o) => { freq[o.categoria] = (freq[o.categoria] || 0) + 1; });
+    const sorted = CATEGORIAS
+      .filter(c => c.value !== 'todas')
+      .filter(c => freq[c.value] && freq[c.value] > 0)
+      .sort((a, b) => (freq[b.value] || 0) - (freq[a.value] || 0));
+    return [CATEGORIAS[0], ...sorted]; // 'Todas' always first
+  }, [obras]);
 
   function setCategoria(v: ObraCategoria | 'todas') {
     onChange({ ...filters, categoria: v });
@@ -133,7 +146,7 @@ export function ObraFilters({
       {/* ── Categoria ── */}
       <FilterSection title="Categoria">
         <div className="flex flex-col gap-0.5">
-          {CATEGORIAS.map((cat) => {
+          {(categoriasExpanded ? categoriasOrdenadas : categoriasOrdenadas.slice(0, 6)).map((cat) => {
             const active = filters.categoria === cat.value;
             return (
               <button
@@ -153,6 +166,28 @@ export function ObraFilters({
             );
           })}
         </div>
+        {!categoriasExpanded && categoriasOrdenadas.length > 6 && (
+          <button
+            onClick={() => setCategoriasExpanded(true)}
+            className="mt-1 flex items-center gap-1.5 px-3 font-sans text-xs font-medium text-zinc-500 transition-colors hover:text-zinc-900"
+          >
+            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            Ver mais {categoriasOrdenadas.length - 6} categorias
+          </button>
+        )}
+        {categoriasExpanded && categoriasOrdenadas.length > 6 && (
+          <button
+            onClick={() => setCategoriasExpanded(false)}
+            className="mt-1 flex items-center gap-1.5 px-3 font-sans text-xs font-medium text-zinc-500 transition-colors hover:text-zinc-900"
+          >
+            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" />
+            </svg>
+            Ver menos
+          </button>
+        )}
       </FilterSection>
 
       <div className="h-px bg-zinc-100" />
