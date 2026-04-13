@@ -6,23 +6,50 @@ import { obrasService } from '@/services/obrasService';
 
 const ITEMS_PER_PAGE = 10;
 
+type StatusFiltro = 'todos' | 'publicada' | 'pendente' | 'recusada';
+
 interface Props {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; status?: StatusFiltro }>;
 }
+
+const STATUS_LABEL: Record<string, string> = {
+  publicada: 'Publicada',
+  pendente: 'Pendente',
+  recusada: 'Recusada',
+};
+
+const STATUS_STYLE: Record<string, string> = {
+  publicada: 'bg-green-100 text-green-700 border-green-200',
+  pendente: 'bg-amber-100 text-amber-700 border-amber-200',
+  recusada: 'bg-red-100 text-red-700 border-red-200',
+};
 
 export default async function BackstageObras({ searchParams }: Props) {
   const params = await searchParams;
   const currentPage = Number(params.page) || 1;
+  const statusFiltro: StatusFiltro = params.status ?? 'todos';
 
   let backendObras: any[] = [];
   try { backendObras = await obrasService.getAll(); } catch {}
 
   const todasObras = [...backendObras].sort((a, b) => b.ano - a.ano);
-  const totalItems = todasObras.length;
+
+  const obrasFiltradas = statusFiltro === 'todos'
+    ? todasObras
+    : todasObras.filter((o) => o.status === statusFiltro);
+
+  const totalItems = obrasFiltradas.length;
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const obrasPaginadas = todasObras.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const obrasPaginadas = obrasFiltradas.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const filtros: { label: string; value: StatusFiltro }[] = [
+    { label: 'Todas', value: 'todos' },
+    { label: 'Publicadas', value: 'publicada' },
+    { label: 'Pendentes', value: 'pendente' },
+    { label: 'Recusadas', value: 'recusada' },
+  ];
 
   return (
     <div className="mx-auto max-w-6xl p-6 lg:p-8">
@@ -30,7 +57,7 @@ export default async function BackstageObras({ searchParams }: Props) {
         <div>
           <h1 className="font-serif text-2xl font-bold text-zinc-900">Obras cadastradas</h1>
           <p className="mt-1 font-sans text-sm text-zinc-500">
-            Gerencie as {totalItems} publicações do acervo
+            Gerencie as {todasObras.length} publicações do acervo
           </p>
         </div>
         <Link
@@ -44,6 +71,28 @@ export default async function BackstageObras({ searchParams }: Props) {
         </Link>
       </div>
 
+      {/* Filtros de status */}
+      <div className="mb-4 flex items-center gap-2">
+        {filtros.map((f) => (
+          <Link
+            key={f.value}
+            href={`?status=${f.value}&page=1`}
+            className={`rounded-lg border px-3 py-1.5 font-sans text-xs font-semibold transition-colors ${
+              statusFiltro === f.value
+                ? 'border-zinc-900 bg-zinc-900 text-white'
+                : 'border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50'
+            }`}
+          >
+            {f.label}
+            {f.value !== 'todos' && (
+              <span className="ml-1.5 tabular-nums opacity-60">
+                {todasObras.filter((o) => o.status === f.value).length}
+              </span>
+            )}
+          </Link>
+        ))}
+      </div>
+
       <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left font-sans">
@@ -52,6 +101,7 @@ export default async function BackstageObras({ searchParams }: Props) {
                 <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-widest text-zinc-500">Título</th>
                 <th className="hidden px-4 py-4 text-[11px] font-semibold uppercase tracking-widest text-zinc-500 sm:table-cell">Categoria</th>
                 <th className="hidden px-4 py-4 text-[11px] font-semibold uppercase tracking-widest text-zinc-500 md:table-cell">Ano</th>
+                <th className="hidden px-4 py-4 text-[11px] font-semibold uppercase tracking-widest text-zinc-500 lg:table-cell">Status</th>
                 <th className="px-6 py-4 text-right text-[11px] font-semibold uppercase tracking-widest text-zinc-500">Ações</th>
               </tr>
             </thead>
@@ -71,6 +121,13 @@ export default async function BackstageObras({ searchParams }: Props) {
                     <td className="hidden px-4 py-4 text-sm tabular-nums text-zinc-500 md:table-cell">
                       {obra.ano}
                     </td>
+                    <td className="hidden px-4 py-4 lg:table-cell">
+                      <span className={`inline-flex items-center rounded-md border px-2 py-1 text-[10px] font-semibold uppercase tracking-wider ${
+                        STATUS_STYLE[obra.status] ?? 'bg-zinc-100 text-zinc-600 border-zinc-200'
+                      }`}>
+                        {STATUS_LABEL[obra.status] ?? obra.status}
+                      </span>
+                    </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-1">
                         <Link href={`/${obra.slug}`} target="_blank" className="rounded-lg p-2 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-900">
@@ -86,7 +143,11 @@ export default async function BackstageObras({ searchParams }: Props) {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-sm text-zinc-500">Nenhuma obra cadastrada até o momento.</td>
+                  <td colSpan={5} className="px-6 py-8 text-center text-sm text-zinc-500">
+                    {statusFiltro === 'todos'
+                      ? 'Nenhuma obra cadastrada até o momento.'
+                      : `Nenhuma obra com status "${STATUS_LABEL[statusFiltro]?.toLowerCase()}".`}
+                  </td>
                 </tr>
               )}
             </tbody>
@@ -102,12 +163,12 @@ export default async function BackstageObras({ searchParams }: Props) {
             </span>
             <div className="flex items-center gap-2">
               {currentPage > 1 ? (
-                <Link href={`?page=${currentPage - 1}`} className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 font-sans text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50">Anterior</Link>
+                <Link href={`?status=${statusFiltro}&page=${currentPage - 1}`} className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 font-sans text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50">Anterior</Link>
               ) : (
                 <button disabled className="cursor-not-allowed rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-1.5 font-sans text-sm font-medium text-zinc-400">Anterior</button>
               )}
               {currentPage < totalPages ? (
-                <Link href={`?page=${currentPage + 1}`} className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 font-sans text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50">Próximo</Link>
+                <Link href={`?status=${statusFiltro}&page=${currentPage + 1}`} className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 font-sans text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50">Próximo</Link>
               ) : (
                 <button disabled className="cursor-not-allowed rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-1.5 font-sans text-sm font-medium text-zinc-400">Próximo</button>
               )}

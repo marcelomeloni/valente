@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
 import { useAuth } from '@/contexts/AuthContext';
 
 const NAV = [
@@ -18,10 +17,19 @@ const NAV = [
   {
     label: 'Acervo de obras',
     href: '/backstage/obras',
-    exact: true, // Para não ficar ativo quando estiver na página de "nova"
+    exact: true,
     icon: (
       <svg className="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Submissões',
+    href: '/backstage/submissoes',
+    icon: (
+      <svg className="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
       </svg>
     ),
   },
@@ -48,7 +56,7 @@ export function BackstageSidebar() {
 
   return (
     <aside className="flex h-full w-64 flex-col bg-zinc-950 border-r border-zinc-900">
-      
+
       {/* Logo */}
       <div className="flex h-16 flex-shrink-0 items-center border-b border-zinc-800/50 px-6">
         <Link href="/backstage" className="flex items-center gap-3 transition-opacity hover:opacity-80">
@@ -127,7 +135,7 @@ export function BackstageSidebar() {
           </svg>
         </button>
       </div>
-      
+
     </aside>
   );
 }

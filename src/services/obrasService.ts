@@ -22,6 +22,10 @@ export const obrasService = {
     }));
   },
 
+  getDashboard: async () => {
+    return api.get<any>('/obras/dashboard');
+  },
+
   getById: async (id: number) => {
     return api.get<any>(`/obras/${id}`);
   },
