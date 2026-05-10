@@ -27,81 +27,39 @@ export default function NovaObraPage() {
   const { user } = useAuth();
   const [isSaving, setIsSaving] = useState(false);
 
-  const handleCreate = async (data: ObraFormData) => {
-    setIsSaving(true);
-
-    try {
-      // ── 1. Upload do PDF (se houver) ──────────────────────────
-      let pdfUrl: string | null = null;
-      if (data.arquivo) {
-        const uploadResult = await obrasService.uploadPdf(data.arquivo);
-        pdfUrl = uploadResult.publicUrl;
-      }
-
-      // ── 2. Resolver Autores: buscar/criar IDs ─────────────────
-      const allAutores = await autorService.getAll();
-      const autorIds: number[] = [];
-
-      for (const nomeAutor of data.autores) {
-        const trimmed = nomeAutor.trim();
-        if (!trimmed) continue;
-        const existing = allAutores.find(
-          (a) => norm(a.nome) === norm(trimmed)
-        );
-        if (existing) {
-          autorIds.push(existing.id);
-        } else {
-          const created = await autorService.create({ nome: trimmed });
-          autorIds.push(created.id);
-        }
-      }
-
-      // ── 3. Resolver Temas: buscar/criar IDs ───────────────────
-      const allTemas = await temaService.getAll();
-      const temaIds: number[] = [];
-
-      for (const nomeTema of data.temas) {
-        const trimmed = nomeTema.trim();
-        if (!trimmed) continue;
-        const existing = allTemas.find(
-          (t) => norm(t.nome) === norm(trimmed)
-        );
-        if (existing) {
-          temaIds.push(existing.id);
-        } else {
-          const created = await temaService.create({ nome: trimmed });
-          temaIds.push(created.id);
-        }
-      }
-
-      // ── 4. Montar payload e enviar p/ backend ─────────────────
-      const slug = generateSlug(data.titulo);
-
-      const payload = {
-        slug,
-        titulo: data.titulo,
-        categoria: data.categoria,
-        pdf: pdfUrl,
-        resumo: data.resumo || null,
-        link_externo: data.url || null,
-        ano: Number(data.ano),
-        publicacao: data.publicacao || null,
-        catalogador_id: user?.id || null,
-        autores: autorIds,
-        temas: temaIds,
-      };
-
-      await obrasService.create(payload);
-
-      alert('Obra cadastrada com sucesso no banco de dados!');
-      router.push('/backstage/obras');
-    } catch (err: any) {
-      console.error('Erro ao cadastrar obra:', err);
-      alert('Erro ao cadastrar obra. Verifique o console para detalhes.');
-    } finally {
-      setIsSaving(false);
+ const handleCreate = async (data: ObraFormData) => {
+  setIsSaving(true);
+  try {
+    let pdfUrl: string | null = null;
+    if (data.arquivo) {
+      const uploadResult = await obrasService.uploadPdf(data.arquivo);
+      pdfUrl = uploadResult.publicUrl;
     }
-  };
+
+    // Front agora só manda nomes — backend resolve/cria autores e temas
+    await obrasService.create({
+      slug:           generateSlug(data.titulo),
+      titulo:         data.titulo,
+      categoria:      data.categoria,
+      pdf:            pdfUrl,
+      resumo:         data.resumo || null,
+      link_externo:   data.url || null,
+      ano:            Number(data.ano),
+      publicacao:     data.publicacao || null,
+      catalogador_id: user?.id || null,
+      autores:        data.autores,   // string[]
+      temas:          data.temas,     // string[]
+    });
+
+    alert('Obra cadastrada com sucesso!');
+    router.push('/backstage/obras');
+  } catch (err: any) {
+    console.error('Erro ao cadastrar obra:', err);
+    alert('Erro ao cadastrar obra. Verifique o console para detalhes.');
+  } finally {
+    setIsSaving(false);
+  }
+};
 
   return (
     <div className="mx-auto max-w-5xl p-6 lg:p-8">

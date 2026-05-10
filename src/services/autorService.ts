@@ -9,16 +9,24 @@ export const autorService = {
   getAll: async (): Promise<AutorResponse[]> => {
     return api.get<AutorResponse[]>('/autores');
   },
+
+  getAprovados: async (): Promise<AutorResponse[]> => {
+    return api.get<AutorResponse[]>('/autores/aprovados');
+  },
+
   getById: async (id: number): Promise<AutorResponse> => {
     return api.get<AutorResponse>(`/autores/${id}`);
   },
+
   create: async (data: { nome: string }): Promise<AutorResponse> => {
     return api.post<AutorResponse>('/autores', data);
   },
+
   update: async (id: number, data: { nome: string }): Promise<AutorResponse> => {
     return api.put<AutorResponse>(`/autores/${id}`, data);
   },
+
   delete: async (id: number) => {
     return api.delete<any>(`/autores/${id}`);
-  }
+  },
 };

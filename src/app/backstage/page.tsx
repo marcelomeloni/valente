@@ -141,7 +141,7 @@ export default async function BackstageDashboard() {
           )}
           {recentesPendentes.map((sub) => (
             <Link
-              href={`/backstage/submissoes/${sub.id}`}
+              href={`/backstage/submissoes`}
               key={sub.id}
               className="group flex items-center justify-between px-6 py-4 transition-colors hover:bg-zinc-50"
             >

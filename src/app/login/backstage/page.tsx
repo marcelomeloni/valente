@@ -66,7 +66,7 @@ export default function CatalogadorLoginPage() {
               </div>
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-zinc-700">Senha criptografada</label>
+              <label htmlFor="password" className="block text-sm font-semibold text-zinc-700">Senha</label>
               <div className="mt-2">
                 <input
                   id="password" name="password" type="password" autoComplete="current-password" required value={password}

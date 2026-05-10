@@ -31,9 +31,9 @@ export default function ObrasPage() {
     async function carregarDados() {
       try {
         const [obrasList, temasList, autoresList] = await Promise.all([
-          obrasService.getAll(),
-          temaService.getAll(),
-          autorService.getAll()
+          obrasService.getAprovadas(),
+          temaService.getAprovados(),
+          autorService.getAprovados()
         ]);
 
         setObras(obrasList);
