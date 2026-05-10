@@ -1,26 +1,26 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion'; // Importe Variants aqui
 import { LogoModal } from './logo/LogoModal';
 import { Terminal } from 'lucide-react';
 
 export function TurtleSection() {
   const [modalOpen, setModalOpen] = useState(false);
 
-  const containerVariants = {
+  // Tipagem explícita para evitar erros de inferência no ease e transition
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.15 } }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
   };
 
   return (
     <section className="w-full bg-white py-28 relative overflow-hidden">
-      {/* Decorative background element */}
       <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-bl from-zinc-50 to-transparent -z-10 opacity-60" />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -49,7 +49,6 @@ export function TurtleSection() {
         {/* Body */}
         <div className="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:items-start">
 
-          {/* Left: narrative */}
           <motion.div 
             className="flex flex-col gap-6 font-sans"
             variants={containerVariants}
@@ -73,7 +72,7 @@ export function TurtleSection() {
             ))}
           </motion.div>
 
-          {/* Right: two stacked cards */}
+          {/* Cards Interativos */}
           <div className="flex flex-col gap-6 lg:pl-8">
             <motion.div 
               initial={{ opacity: 0, y: 30 }}
