@@ -19,7 +19,10 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
-  let list = [];
+  
+  // CORREÇÃO AQUI: Tipagem explícita adicionada
+  let list: any[] = []; 
+  
   try { list = await obrasService.getAll(); } catch {}
   
   const obra = list.find((o) => o.slug === slug);
@@ -33,14 +36,17 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function ObraPage({ params }: Props) {
   const { slug } = await params;
-  let serverObras = [];
+  
+  // CORREÇÃO AQUI: Tipagem explícita adicionada
+  let serverObras: any[] = []; 
+  
   try { serverObras = await obrasService.getAll(); } catch {}
   
   const obra = serverObras.find((o) => o.slug === slug);
   if (!obra) notFound();
 
   const relacionadas = serverObras.filter(
-    (o) => o.slug !== obra.slug && o.temas.some((t) => obra.temas.includes(t))
+    (o) => o.slug !== obra.slug && o.temas.some((t: string) => obra.temas.includes(t))
   ).slice(0, 3);
 
   return (
@@ -84,7 +90,7 @@ export default async function ObraPage({ params }: Props) {
               <div className="mt-8">
                 <p className="mb-3 font-sans text-[11px] font-semibold uppercase tracking-widest text-zinc-400">Temas</p>
                 <div className="flex flex-wrap gap-2">
-                  {obra.temas.map((tema) => (
+                  {obra.temas.map((tema: string) => (
                     <Link key={tema} href={`/obras?tema=${encodeURIComponent(tema)}`} className="rounded-full border border-zinc-200 bg-white px-3 py-1 font-sans text-xs font-medium text-zinc-600 transition-colors hover:border-unicamp hover:text-unicamp">
                       {tema}
                     </Link>

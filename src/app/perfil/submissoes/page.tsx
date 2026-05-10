@@ -14,7 +14,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { submissaoService, SubmissaoResponse } from "@/services/submissaoService";
+import { submissaoService, SubmissaoListItem } from "@/services/submissaoService";
 
 const getStatusConfig = (status: string) => {
   const configs: Record<string, { label: string; style: string; Icon: React.ElementType }> = {
@@ -51,7 +51,8 @@ export default function SubmissoesPage() {
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
 
-  const [submissoes, setSubmissoes] = useState<SubmissaoResponse[]>([]);
+  // ALTERAÇÃO AQUI: De SubmissaoResponse[] para SubmissaoListItem[]
+  const [submissoes, setSubmissoes] = useState<SubmissaoListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -60,7 +61,7 @@ export default function SubmissoesPage() {
 
     submissaoService
       .getByUserId(user.id)
-      .then(setSubmissoes)
+      .then((data) => setSubmissoes(data)) // Agora os tipos são compatíveis
       .catch((err) => setError(err.message ?? "Erro ao carregar submissões."))
       .finally(() => setIsLoading(false));
   }, [user?.id, authLoading]);

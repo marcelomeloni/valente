@@ -21,10 +21,15 @@ export interface AvaliacaoPayload {
 }
 
 // Shape leve — vem da listagem GET /submissoes
+// src/services/submissaoService.ts
+
 export interface SubmissaoListItem {
   id: number;
   status: 'pendente' | 'aprovada' | 'recusada';
   data_submissao: string;
+  id_obra: number;               // Adicionado
+  data_revisao?: string | null;  // Adicionado
+  observacao?: string | null;    // Adicionado
   obra?: {
     id: number;
     titulo: string;

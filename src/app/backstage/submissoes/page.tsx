@@ -69,9 +69,16 @@ export default function SubmissoesPage() {
   }
 
   async function handleAceitar(id: number) {
+    // 1. Verificação de segurança para o TypeScript
+    if (!user?.id) {
+      alert("Sessão expirada. Faça login novamente.");
+      return;
+    }
+
     setSalvando(true);
     try {
-      await submissaoService.aceitar(id, user?.id);
+      // Agora o TS sabe que user.id existe aqui
+      await submissaoService.aceitar(id, user.id);
       fecharDetalhe();
       await loadLista();
     } catch (err) {
@@ -83,10 +90,15 @@ export default function SubmissoesPage() {
   }
 
   async function handleRecusar() {
-    if (!recusandoId || !motivo.trim()) return;
+    // 2. Verificação de segurança combinada
+    if (!recusandoId || !motivo.trim() || !user?.id) {
+      if (!user?.id) alert("Sessão expirada.");
+      return;
+    }
+    
     setSalvando(true);
     try {
-      await submissaoService.recusar(recusandoId, user?.id, motivo.trim());
+      await submissaoService.recusar(recusandoId, user.id, motivo.trim());
       setRecusandoId(null);
       setMotivo('');
       fecharDetalhe();

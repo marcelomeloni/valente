@@ -1,15 +1,19 @@
 import Link from 'next/link';
 import { obrasService } from '@/services/obrasService';
 
+import { SubmissaoResponse } from '@/services/submissaoService';
+
 export default async function BackstageDashboard() {
-  // Estrutura inicial padrão
-  let dashboardData = {
+  // CORREÇÃO: Tipagem explícita para evitar o erro de 'never'
+  let dashboardData: {
+    stats: { total: number; livros: number; artigos: number; pendentes: number };
+    submissoesPendentes: SubmissaoResponse[];
+  } = {
     stats: { total: 0, livros: 0, artigos: 0, pendentes: 0 },
     submissoesPendentes: []
   };
 
   try { 
-    // Uma única chamada que traz tudo o que o dashboard precisa!
     dashboardData = await obrasService.getDashboard(); 
   } catch (error) {
     console.error("Erro ao carregar dados do dashboard:", error);
