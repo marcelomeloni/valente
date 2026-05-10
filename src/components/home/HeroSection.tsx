@@ -2,10 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion"; // Importe Variants aqui
 
 export function HeroSection() {
-  const containerVariants = {
+  // Tipando explicitamente como Variants
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -16,14 +17,22 @@ export function HeroSection() {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] } },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] } 
+    },
   };
 
-  const imageVariants = {
+  const imageVariants: Variants = {
     hidden: { opacity: 0, scale: 1.05 },
-    visible: { opacity: 1, scale: 1, transition: { duration: 1.5, ease: "easeOut" } },
+    visible: { 
+      opacity: 1, 
+      scale: 1, 
+      transition: { duration: 1.5, ease: "easeOut" } 
+    },
   };
 
   return (
