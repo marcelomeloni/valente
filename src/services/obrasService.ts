@@ -2,39 +2,43 @@ import { api } from './api';
 import { Obra, ObraCategoria } from '../app/obras/types';
 
 export const obrasService = {
-  getAll: async (): Promise<Obra[]> => {
-    const rawData = await api.get<any[]>('/obras');
-    
-    return rawData.map((o) => ({
-      slug: o.slug,
-      titulo: o.titulo,
-      categoria: o.categoria as ObraCategoria,
-      ano: o.ano,
-      publicacao: o.publicacao,
-      resumo: o.resumo,
-      link_externo: o.link_externo,
-      pdf: o.pdf,
-      autores: o.obra_autor?.map((oa: any) => oa.autor?.nome).filter(Boolean) || [],
-      temas: o.obra_tema?.map((ot: any) => ot.tema?.nome).filter(Boolean) || []
-    }));
-  },
+ getAll: async (): Promise<Obra[]> => {
+  const rawData = await api.get<any[]>('/obras');
+  
+  return rawData.map((o) => ({
+    id:          o.id,         
+    slug:        o.slug,
+    titulo:      o.titulo,
+    categoria:   o.categoria as ObraCategoria,
+    ano:         o.ano,
+    status:      o.status,    
+    publicacao:  o.publicacao,
+    resumo:      o.resumo,
+    link_externo: o.link_externo,
+    pdf:         o.pdf,
+    autores: o.obra_autor?.map((oa: any) => oa.autor?.nome).filter(Boolean) || [],
+    temas:   o.obra_tema?.map((ot: any) => ot.tema?.nome).filter(Boolean) || [],
+  }));
+},
 
   getAprovadas: async (): Promise<Obra[]> => {
-    const rawData = await api.get<any[]>('/obras/aprovadas');
+  const rawData = await api.get<any[]>('/obras/aprovadas');
 
-    return rawData.map((o) => ({
-      slug: o.slug,
-      titulo: o.titulo,
-      categoria: o.categoria as ObraCategoria,
-      ano: o.ano,
-      publicacao: o.publicacao,
-      resumo: o.resumo,
-      link_externo: o.link_externo,
-      pdf: o.pdf,
-      autores: o.obra_autor?.map((oa: any) => oa.autor?.nome).filter(Boolean) || [],
-      temas: o.obra_tema?.map((ot: any) => ot.tema?.nome).filter(Boolean) || []
-    }));
-  },
+  return rawData.map((o) => ({
+    id:           o.id,
+    slug:         o.slug,
+    titulo:       o.titulo,
+    categoria:    o.categoria as ObraCategoria,
+    ano:          o.ano,
+    status:       o.status,
+    publicacao:   o.publicacao,
+    resumo:       o.resumo,
+    link_externo: o.link_externo,
+    pdf:          o.pdf,
+    autores: o.obra_autor?.map((oa: any) => oa.autor?.nome).filter(Boolean) || [],
+    temas:   o.obra_tema?.map((ot: any) => ot.tema?.nome).filter(Boolean) || [],
+  }));
+},
 
   getDashboard: async () => {
     return api.get<any>('/obras/dashboard');
@@ -55,7 +59,8 @@ export const obrasService = {
   delete: async (id: number) => {
     return api.delete<any>(`/obras/${id}`);
   },
-
+  getBySlug: (slug: string) =>
+  api.get(`/obras/slug/${slug}`),
   uploadPdf: async (file: File): Promise<{ publicUrl: string; path: string }> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();

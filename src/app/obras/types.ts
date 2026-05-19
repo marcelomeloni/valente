@@ -20,13 +20,14 @@ export interface Obra {
   titulo: string;
   categoria: ObraCategoria;
   temas: string[];
+  status: string;
   ano: number;
   autores: string[];
   publicacao?: string;
   resumo?: string;
   link_externo?: string;
   pdf?: string;
-  id?: number;
+  id: number;        
 }
 
 export const CATEGORIAS: { value: ObraCategoria | 'todas'; label: string }[] = [

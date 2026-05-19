@@ -35,20 +35,19 @@ export default function EditarObraPage({ params }: Props) {
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const list = await obrasService.getAll();
-        const found = list.find((o) => o.slug === slug);
-        setObraOriginal(found);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+useEffect(() => {
+  async function load() {
+    try {
+      const obra = await obrasService.getBySlug(slug);
+      setObraOriginal(obra);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-    load();
-  }, [slug]);
+  }
+  load();
+}, [slug]);
 
   if (loading) {
      return <div className="p-8 text-zinc-400 animate-pulse">Carregando editor...</div>;
@@ -62,17 +61,17 @@ export default function EditarObraPage({ params }: Props) {
     );
   }
 
-  const initialData: Partial<ObraFormData> = {
-    titulo: obraOriginal.titulo,
-    categoria: obraOriginal.categoria,
-    autores: obraOriginal.autores,
-    ano: String(obraOriginal.ano),
-    publicacao: obraOriginal.publicacao ?? '',
-    resumo: obraOriginal.resumo ?? '',
-    temas: obraOriginal.temas,
-    url: obraOriginal.link_externo ?? '',
-    arquivo: null,
-  };
+const initialData: Partial<ObraFormData> = {
+  titulo:     obraOriginal.titulo,
+  categoria:  obraOriginal.categoria,
+  autores:    obraOriginal.obra_autor?.map((a: any) => a.autor.nome) ?? [],
+  ano:        String(obraOriginal.ano),
+  publicacao: obraOriginal.publicacao ?? '',
+  resumo:     obraOriginal.resumo ?? '',
+  temas:      obraOriginal.obra_tema?.map((t: any) => t.tema.nome) ?? [],
+  url:        obraOriginal.link_externo ?? '',
+  arquivo:    null,
+};
 
   const handleUpdate = async (data: ObraFormData) => {
     setIsSaving(true);

@@ -1,7 +1,7 @@
 // src/components/backstage/ObraForm.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';  // ← adiciona useEffect
 import { Step1Info } from './steps/Step1Info';
 import { Step2Details } from './steps/Step2Details';
 
@@ -27,16 +27,32 @@ export function ObraForm({ initialData, onSubmit, submitLabel = 'Salvar obra' }:
   const [step, setStep] = useState(1);
 
   const [form, setForm] = useState<ObraFormData>({
-    titulo: initialData?.titulo ?? '',
-    categoria: initialData?.categoria ?? '',
-    autores: initialData?.autores ?? ['José Armando Valente'],
-    ano: initialData?.ano ?? '',
+    titulo:     initialData?.titulo     ?? '',
+    categoria:  initialData?.categoria  ?? '',
+    autores:    initialData?.autores    ?? ['José Armando Valente'],
+    ano:        initialData?.ano        ?? '',
     publicacao: initialData?.publicacao ?? '',
-    resumo: initialData?.resumo ?? '',
-    temas: initialData?.temas ?? [],
-    url: initialData?.url ?? '',
-    arquivo: initialData?.arquivo ?? null,
+    resumo:     initialData?.resumo     ?? '',
+    temas:      initialData?.temas      ?? [],
+    url:        initialData?.url        ?? '',
+    arquivo:    initialData?.arquivo    ?? null,
   });
+
+  // ← sincroniza quando initialData chega de forma assíncrona
+  useEffect(() => {
+    if (!initialData) return;
+    setForm((prev) => ({
+      ...prev,
+      titulo:     initialData.titulo     ?? prev.titulo,
+      categoria:  initialData.categoria  ?? prev.categoria,
+      autores:    initialData.autores    ?? prev.autores,
+      ano:        initialData.ano        ?? prev.ano,
+      publicacao: initialData.publicacao ?? prev.publicacao,
+      resumo:     initialData.resumo     ?? prev.resumo,
+      temas:      initialData.temas      ?? prev.temas,
+      url:        initialData.url        ?? prev.url,
+    }));
+  }, [initialData]);
 
   const updateForm = (updates: Partial<ObraFormData>) => {
     setForm((prev) => ({ ...prev, ...updates }));
@@ -61,11 +77,7 @@ export function ObraForm({ initialData, onSubmit, submitLabel = 'Salvar obra' }:
     <div className="flex flex-col gap-8">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-3">
-          <div
-            className={`flex h-8 w-8 items-center justify-center rounded-full font-sans text-sm font-bold transition-colors ${
-              step >= 1 ? 'bg-unicamp text-white' : 'bg-zinc-100 text-zinc-400'
-            }`}
-          >
+          <div className={`flex h-8 w-8 items-center justify-center rounded-full font-sans text-sm font-bold transition-colors ${step >= 1 ? 'bg-unicamp text-white' : 'bg-zinc-100 text-zinc-400'}`}>
             1
           </div>
           <span className={`font-sans text-sm font-semibold ${step >= 1 ? 'text-zinc-900' : 'text-zinc-400'}`}>
@@ -74,11 +86,7 @@ export function ObraForm({ initialData, onSubmit, submitLabel = 'Salvar obra' }:
         </div>
         <div className="h-px w-12 bg-zinc-200" />
         <div className="flex items-center gap-3">
-          <div
-            className={`flex h-8 w-8 items-center justify-center rounded-full font-sans text-sm font-bold transition-colors ${
-              step >= 2 ? 'bg-unicamp text-white' : 'bg-zinc-100 text-zinc-400'
-            }`}
-          >
+          <div className={`flex h-8 w-8 items-center justify-center rounded-full font-sans text-sm font-bold transition-colors ${step >= 2 ? 'bg-unicamp text-white' : 'bg-zinc-100 text-zinc-400'}`}>
             2
           </div>
           <span className={`font-sans text-sm font-semibold ${step >= 2 ? 'text-zinc-900' : 'text-zinc-400'}`}>
@@ -89,20 +97,10 @@ export function ObraForm({ initialData, onSubmit, submitLabel = 'Salvar obra' }:
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         {step === 1 && (
-          <Step1Info 
-            form={form} 
-            updateForm={updateForm} 
-            onNext={handleNext} 
-          />
+          <Step1Info form={form} updateForm={updateForm} onNext={handleNext} />
         )}
-        
         {step === 2 && (
-          <Step2Details 
-            form={form} 
-            updateForm={updateForm} 
-            onPrev={handlePrev} 
-            submitLabel={submitLabel} 
-          />
+          <Step2Details form={form} updateForm={updateForm} onPrev={handlePrev} submitLabel={submitLabel} />
         )}
       </form>
     </div>

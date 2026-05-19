@@ -167,12 +167,13 @@ export default function SubmissoesPage() {
 
                 {item.status === "recusada" && (
                   <div className="mt-2 flex">
-                    <button className="group flex items-center gap-2 rounded-lg text-sm font-medium text-unicamp transition-colors hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-unicamp focus-visible:ring-offset-2 dark:hover:text-red-400">
-                      <PencilLine className="h-4 w-4" />
-                      <span className="underline-offset-4 group-hover:underline">
-                        Editar e reenviar
-                      </span>
-                    </button>
+            <button
+  onClick={() => router.push(`/contribuir?reenviar=${item.id}`)}
+  className="group flex items-center gap-2 rounded-lg text-sm font-medium text-unicamp transition-colors hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-unicamp focus-visible:ring-offset-2 dark:hover:text-red-400"
+>
+  <PencilLine className="h-4 w-4" />
+  <span className="underline-offset-4 group-hover:underline">Editar e reenviar</span>
+</button>
                   </div>
                 )}
               </article>

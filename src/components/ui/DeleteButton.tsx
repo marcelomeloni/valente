@@ -1,16 +1,26 @@
-// components/ui/DeleteObraButton.tsx
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { obrasService } from '@/services/obrasService';
+
 interface Props {
+  id: number;
   slug: string;
   titulo: string;
 }
 
-export function DeleteObraButton({ slug, titulo }: Props) {
+export function DeleteObraButton({ id, slug, titulo }: Props) {
+  const router = useRouter();
+
   const handleDelete = async () => {
-    if (confirm(`Excluir "${titulo}"?`)) {
-      // TODO: Integrar com a API de exclusão (ex: DELETE /api/obras/[slug]) e disparar revalidação do cache
-      console.log('delete', slug);
+    if (!confirm(`Excluir "${titulo}"? Esta ação não pode ser desfeita.`)) return;
+
+    try {
+      await obrasService.delete(id);
+      router.refresh(); // revalida a tabela sem reload completo
+    } catch (err) {
+      console.error('Erro ao deletar obra:', err);
+      alert('Erro ao excluir a obra. Verifique o console.');
     }
   };
 

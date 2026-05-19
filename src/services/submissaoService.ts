@@ -14,22 +14,31 @@ export interface SubmissaoCreatePayload {
   temas?: string[];
 }
 
+export interface ReenviarPayload {
+  titulo: string;
+  categoria: string;
+  pdf?: string | null;
+  resumo?: string | null;
+  link_externo?: string | null;
+  ano?: number | string;
+  publicacao?: string | null;
+  autores?: string[];
+  temas?: string[];
+}
+
 export interface AvaliacaoPayload {
   status: 'aprovada' | 'recusada';
   observacao?: string;
   id_catalogador: number | string;
 }
 
-// Shape leve — vem da listagem GET /submissoes
-// src/services/submissaoService.ts
-
 export interface SubmissaoListItem {
   id: number;
   status: 'pendente' | 'aprovada' | 'recusada';
   data_submissao: string;
-  id_obra: number;               // Adicionado
-  data_revisao?: string | null;  // Adicionado
-  observacao?: string | null;    // Adicionado
+  id_obra: number;
+  data_revisao?: string | null;
+  observacao?: string | null;
   obra?: {
     id: number;
     titulo: string;
@@ -42,7 +51,6 @@ export interface SubmissaoListItem {
   };
 }
 
-// Shape completo — vem do detalhe GET /submissoes/:id
 export interface SubmissaoDetalhe extends SubmissaoListItem {
   id_obra: number;
   id_usuario: number;
@@ -74,7 +82,6 @@ export interface SubmissaoDetalhe extends SubmissaoListItem {
   };
 }
 
-// Mantido para compatibilidade com pages que ainda usam o tipo genérico
 export type SubmissaoResponse = SubmissaoDetalhe;
 
 export interface SubmissaoActionResponse {
@@ -87,6 +94,9 @@ export const submissaoService = {
 
   create: (data: SubmissaoCreatePayload) =>
     api.post<SubmissaoActionResponse>('/submissoes', data),
+
+  reenviar: (id: number | string, data: ReenviarPayload) =>
+    api.put<{ message: string }>(`/submissoes/${id}/reenviar`, data),
 
   aceitar: (id_submissao: number | string, id_catalogador: number | string) =>
     api.put<SubmissaoActionResponse>(`/submissoes/${id_submissao}/avaliar`, {
@@ -106,19 +116,15 @@ export const submissaoService = {
 
   // ── Leitura ────────────────────────────────────────────────────
 
-  // Lista leve — todas as submissões (backstage)
   getAll: () =>
     api.get<SubmissaoListItem[]>('/submissoes'),
 
-  // Lista leve — só pendentes
   getPending: () =>
     api.get<SubmissaoListItem[]>('/submissoes/pendentes'),
 
-  // Lista leve — por usuário (página "minhas submissões")
   getByUserId: (id_usuario: number | string) =>
     api.get<SubmissaoListItem[]>(`/submissoes/usuario/${id_usuario}`),
 
-  // Detalhe completo — chamado só ao abrir o modal
   getById: (id: number | string) =>
     api.get<SubmissaoDetalhe>(`/submissoes/${id}`),
 };
