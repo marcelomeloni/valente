@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { ObraForm, ObraFormData } from '@/components/backstage/ObraForm';
@@ -18,7 +18,7 @@ function generateSlug(titulo: string): string {
     .substring(0, 80);
 }
 
-export default function ContribuirPage() {
+function ContribuirContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const reenviarId = searchParams.get('reenviar');
@@ -149,5 +149,19 @@ export default function ContribuirPage() {
         </section>
       </div>
     </main>
+  );
+}
+
+export default function ContribuirPage() {
+  return (
+    <Suspense 
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-background">
+          <Loader2 className="h-8 w-8 animate-spin text-unicamp dark:text-red-500" />
+        </div>
+      }
+    >
+      <ContribuirContent />
+    </Suspense>
   );
 }
