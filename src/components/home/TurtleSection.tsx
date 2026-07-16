@@ -1,14 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, Variants } from 'framer-motion'; // Importe Variants aqui
+import { motion, Variants } from 'framer-motion'; 
 import { LogoModal } from './logo/LogoModal';
 import { Terminal } from 'lucide-react';
 
 export function TurtleSection() {
   const [modalOpen, setModalOpen] = useState(false);
 
-  // Tipagem explícita para evitar erros de inferência no ease e transition
+  
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.15 } }

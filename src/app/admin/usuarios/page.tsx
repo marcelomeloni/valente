@@ -40,7 +40,7 @@ export default function AdminUsuariosPage() {
       ];
       setUsers(merged as User[]);
     } catch (err) {
-      console.error(err);
+      
     } finally {
       setLoading(false);
     }
@@ -71,7 +71,7 @@ export default function AdminUsuariosPage() {
     
     try {
       if (editingUser) {
-        // Update logic (Omitted complex role switching for safety; assume name/pass updates)
+        
         if (editingUser.role === 'admin') {
           await adminService.update(Number(editingUser.id), { nome: formData.nome, username: formData.username, senha: formData.password });
         } else {
@@ -79,7 +79,7 @@ export default function AdminUsuariosPage() {
         }
         alert('Usuário atualizado com sucesso no banco de dados!');
       } else {
-        // Create logic
+        
         if (formData.role === 'admin') {
           await adminService.create({ nome: formData.nome, username: formData.username, senha: formData.password });
         } else {
@@ -91,7 +91,7 @@ export default function AdminUsuariosPage() {
       await loadData();
       handleCloseModal();
     } catch (err) {
-      console.error('Erro ao salvar usuário:', err);
+      
       alert('Ocorreu um erro ao salvar (Verifique duplicidades no username).');
     }
   };

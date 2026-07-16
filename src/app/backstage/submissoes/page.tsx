@@ -22,17 +22,17 @@ const FILTROS: { label: string; value: StatusFiltro }[] = [
 export default function SubmissoesPage() {
   const { user } = useAuth();
 
-  // Lista leve
+  
   const [submissoes, setSubmissoes] = useState<SubmissaoListItem[]>([]);
   const [loading, setLoading]       = useState(true);
   const [filtro, setFiltro]         = useState<StatusFiltro>('pendente');
 
-  // Modal de detalhe
+  
   const [detalheLeve, setDetalheLeve]         = useState<SubmissaoListItem | null>(null);
   const [detalheCompleto, setDetalheCompleto] = useState<SubmissaoDetalhe | null>(null);
   const [loadingDetalhe, setLoadingDetalhe]   = useState(false);
 
-  // Modal de recusa
+  
   const [recusandoId, setRecusandoId] = useState<number | null>(null);
   const [motivo, setMotivo]           = useState('');
   const [salvando, setSalvando]       = useState(false);
@@ -44,7 +44,7 @@ export default function SubmissoesPage() {
     try {
       setSubmissoes(await submissaoService.getAll());
     } catch (err) {
-      console.error(err);
+      
     } finally {
       setLoading(false);
     }
@@ -57,7 +57,7 @@ export default function SubmissoesPage() {
     try {
       setDetalheCompleto(await submissaoService.getById(sub.id));
     } catch (err) {
-      console.error(err);
+      
     } finally {
       setLoadingDetalhe(false);
     }
@@ -69,7 +69,7 @@ export default function SubmissoesPage() {
   }
 
   async function handleAceitar(id: number) {
-    // 1. Verificação de segurança para o TypeScript
+    
     if (!user?.id) {
       alert("Sessão expirada. Faça login novamente.");
       return;
@@ -77,12 +77,12 @@ export default function SubmissoesPage() {
 
     setSalvando(true);
     try {
-      // Agora o TS sabe que user.id existe aqui
+      
       await submissaoService.aceitar(id, user.id);
       fecharDetalhe();
       await loadLista();
     } catch (err) {
-      console.error(err);
+      
       alert('Erro ao aceitar submissão.');
     } finally {
       setSalvando(false);
@@ -90,7 +90,7 @@ export default function SubmissoesPage() {
   }
 
   async function handleRecusar() {
-    // 2. Verificação de segurança combinada
+    
     if (!recusandoId || !motivo.trim() || !user?.id) {
       if (!user?.id) alert("Sessão expirada.");
       return;
@@ -104,7 +104,7 @@ export default function SubmissoesPage() {
       fecharDetalhe();
       await loadLista();
     } catch (err) {
-      console.error(err);
+      
       alert('Erro ao recusar submissão.');
     } finally {
       setSalvando(false);

@@ -15,7 +15,7 @@ export default function AdminTemasPage() {
     try {
       const data = await temaService.getAll();
       setTemas(data.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR')));
-    } catch (err) { console.error(err); }
+    } catch (err) {  }
     finally { setLoading(false); }
   }
 

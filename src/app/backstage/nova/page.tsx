@@ -1,4 +1,4 @@
-// src/app/backstage/nova/page.tsx
+
 'use client';
 
 import { useState } from 'react';
@@ -36,7 +36,7 @@ export default function NovaObraPage() {
       pdfUrl = uploadResult.publicUrl;
     }
 
-    // Front agora só manda nomes — backend resolve/cria autores e temas
+    
     await obrasService.create({
       slug:           generateSlug(data.titulo),
       titulo:         data.titulo,
@@ -47,14 +47,14 @@ export default function NovaObraPage() {
       ano:            Number(data.ano),
       publicacao:     data.publicacao || null,
       catalogador_id: user?.id || null,
-      autores:        data.autores,   // string[]
-      temas:          data.temas,     // string[]
+      autores:        data.autores,   
+      temas:          data.temas,     
     });
 
     alert('Obra cadastrada com sucesso!');
     router.push('/backstage/obras');
   } catch (err: any) {
-    console.error('Erro ao cadastrar obra:', err);
+    
     alert('Erro ao cadastrar obra. Verifique o console para detalhes.');
   } finally {
     setIsSaving(false);

@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, Variants } from "framer-motion"; // Importe Variants aqui
+import { motion, Variants } from "framer-motion"; 
 
 export function HeroSection() {
-  // Tipando explicitamente como Variants
+  
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {

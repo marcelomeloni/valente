@@ -26,7 +26,7 @@ export default function ObrasPage() {
   const [pagina, setPagina] = useState(1);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
-  // --- Fetch API Data via Services ---
+  
   useEffect(() => {
     async function carregarDados() {
       try {
@@ -38,7 +38,7 @@ export default function ObrasPage() {
 
         setObras(obrasList);
 
-        // Contar frequência dos temas no acervo e ordenar por mais usados
+        
         const temaFreq: Record<string, number> = {};
         obrasList.forEach((o) => o.temas?.forEach((t: string) => { temaFreq[t] = (temaFreq[t] || 0) + 1; }));
         const temasOrdenados = temasList
@@ -46,7 +46,7 @@ export default function ObrasPage() {
           .sort((a: string, b: string) => (temaFreq[b] || 0) - (temaFreq[a] || 0));
         setTemasDisponiveis(temasOrdenados);
 
-        // Contar frequência dos autores e ordenar
+        
         const autorFreq: Record<string, number> = {};
         obrasList.forEach((o) => o.autores?.forEach((a: string) => { autorFreq[a] = (autorFreq[a] || 0) + 1; }));
         const autoresOrdenados = autoresList
@@ -55,7 +55,7 @@ export default function ObrasPage() {
         setAutoresDisponiveis(autoresOrdenados);
 
       } catch (err) {
-        console.error('Erro ao buscar dados do acervo:', err);
+        
       } finally {
         setLoading(false);
       }
@@ -267,7 +267,7 @@ export default function ObrasPage() {
   );
 }
 
-// ── Chip helper ───────────────────────────────────────────────────────────────
+
 function Chip({ label, onRemove }: { label: string; onRemove: () => void }) {
   return (
     <span className="flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-3 py-1 font-sans text-xs font-medium text-zinc-700 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">

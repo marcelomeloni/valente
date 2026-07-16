@@ -90,7 +90,7 @@ export interface SubmissaoActionResponse {
 }
 
 export const submissaoService = {
-  // ── Escrita ────────────────────────────────────────────────────
+  
 
   create: (data: SubmissaoCreatePayload) =>
     api.post<SubmissaoActionResponse>('/submissoes', data),
@@ -114,7 +114,7 @@ export const submissaoService = {
   evaluate: (id_submissao: number | string, data: AvaliacaoPayload) =>
     api.put<SubmissaoActionResponse>(`/submissoes/${id_submissao}/avaliar`, data),
 
-  // ── Leitura ────────────────────────────────────────────────────
+  
 
   getAll: () =>
     api.get<SubmissaoListItem[]>('/submissoes'),

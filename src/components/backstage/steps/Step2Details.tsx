@@ -1,4 +1,4 @@
-// src/components/backstage/steps/Step2Details.tsx
+
 'use client';
 
 import { useRef, useState, DragEvent, ChangeEvent } from 'react';

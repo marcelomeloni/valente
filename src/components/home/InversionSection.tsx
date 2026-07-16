@@ -3,7 +3,7 @@
 import { motion, Variants } from 'framer-motion';
 
 export function InversionSection() {
-  // Tipando como Variants para evitar erro de 'string' no ease
+  
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.15 } }

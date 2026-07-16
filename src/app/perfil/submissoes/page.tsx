@@ -51,7 +51,7 @@ export default function SubmissoesPage() {
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
 
-  // ALTERAÇÃO AQUI: De SubmissaoResponse[] para SubmissaoListItem[]
+  
   const [submissoes, setSubmissoes] = useState<SubmissaoListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -61,7 +61,7 @@ export default function SubmissoesPage() {
 
     submissaoService
       .getByUserId(user.id)
-      .then((data) => setSubmissoes(data)) // Agora os tipos são compatíveis
+      .then((data) => setSubmissoes(data)) 
       .catch((err) => setError(err.message ?? "Erro ao carregar submissões."))
       .finally(() => setIsLoading(false));
   }, [user?.id, authLoading]);

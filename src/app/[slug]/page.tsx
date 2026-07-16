@@ -20,7 +20,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   
-  // CORREÇÃO AQUI: Tipagem explícita adicionada
+  
   let list: any[] = []; 
   
   try { list = await obrasService.getAll(); } catch {}
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: Props) {
 export default async function ObraPage({ params }: Props) {
   const { slug } = await params;
   
-  // CORREÇÃO AQUI: Tipagem explícita adicionada
+  
   let serverObras: any[] = []; 
   
   try { serverObras = await obrasService.getAll(); } catch {}

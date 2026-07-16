@@ -1,4 +1,4 @@
-// src/components/backstage/steps/Step1Info.tsx
+
 'use client';
 
 import { useState } from 'react';

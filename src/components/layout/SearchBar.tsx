@@ -18,7 +18,7 @@ export function SearchBar() {
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Fetch obras once (with cache to avoid re-fetching on every mount)
+  
   useEffect(() => {
     async function loadObras() {
       if (obrasCache) {
@@ -30,13 +30,13 @@ export function SearchBar() {
         obrasCache = list;
         setAllObras(list);
       } catch (err) {
-        console.error('SearchBar: erro ao carregar obras', err);
+        
       }
     }
     loadObras();
   }, []);
 
-  // Filter on query change
+  
   useEffect(() => {
     const q = query.toLowerCase().trim();
     if (!q) {
@@ -65,7 +65,7 @@ export function SearchBar() {
     setOpen(true);
   }, [query, allObras]);
 
-  // Close on outside click
+  
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {

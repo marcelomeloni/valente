@@ -15,7 +15,7 @@ export default function AdminObrasPage() {
     try {
       const data = await obrasService.getAll();
       setObras(data.sort((a, b) => b.ano - a.ano));
-    } catch (err) { console.error(err); }
+    } catch (err) {  }
     finally { setLoading(false); }
   }
 
@@ -24,7 +24,7 @@ export default function AdminObrasPage() {
   async function handleDelete(slug: string, titulo: string) {
     if (!confirm(`Tem certeza que deseja excluir "${titulo}"? Esta ação não pode ser desfeita.`)) return;
     try {
-      // Find obra ID by slug
+      
       const obra = obras.find(o => o.slug === slug);
       if (obra?.id) {
         await obrasService.delete(obra.id);

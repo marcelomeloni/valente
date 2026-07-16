@@ -1,9 +1,9 @@
-// ─── Types ────────────────────────────────────────────────────────────────────
+
 
 export interface TurtleState {
   x: number;
   y: number;
-  angle: number; // degrees, 0 = north (up), clockwise
+  angle: number; 
   penDown: boolean;
   visible: boolean;
 }
@@ -27,7 +27,7 @@ export interface RunResult {
   message?: string;
 }
 
-// ─── Initial state ────────────────────────────────────────────────────────────
+
 
 export function createInitialState(width = 500, height = 500): InterpreterState {
   return {
@@ -43,7 +43,7 @@ export function createInitialState(width = 500, height = 500): InterpreterState 
   };
 }
 
-// ─── Tokenizer ────────────────────────────────────────────────────────────────
+
 
 function tokenize(input: string): string[] {
   return input
@@ -54,7 +54,7 @@ function tokenize(input: string): string[] {
     .filter((t) => t.length > 0);
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+
 
 function deg2rad(deg: number): number {
   return (deg * Math.PI) / 180;
@@ -72,7 +72,7 @@ function moveForward(state: InterpreterState, distance: number): InterpreterStat
   return { ...state, lines, turtle: { ...state.turtle, x: nx, y: ny } };
 }
 
-// ─── Executor ─────────────────────────────────────────────────────────────────
+
 
 interface ExecResult {
   state: InterpreterState;
@@ -107,11 +107,11 @@ function exec(tokens: string[], startPos: number, state: InterpreterState, depth
     const t = tokens[pos];
     if (t === ']') break;
 
-    // Skip bare numbers
+    
     if (!isNaN(Number(t))) { pos++; continue; }
 
     switch (t) {
-      // ── Movement ──────────────────────────────────────────────────────────
+      
       case 'PF':
       case 'PARAFRENTE': {
         const n = Number(tokens[pos + 1]);
@@ -145,7 +145,7 @@ function exec(tokens: string[], startPos: number, state: InterpreterState, depth
         break;
       }
 
-      // ── Turtle visibility ─────────────────────────────────────────────────
+      
       case 'TAT':
       case 'TARTARUGA':
         s = { ...s, turtle: { ...s.turtle, visible: true } };
@@ -156,14 +156,14 @@ function exec(tokens: string[], startPos: number, state: InterpreterState, depth
         pos++;
         break;
 
-      // ── Screen ────────────────────────────────────────────────────────────
+      
       case 'LP':
       case 'LIMPATELA':
         s = { ...s, lines: [] };
         pos++;
         break;
 
-      // ── Pen ───────────────────────────────────────────────────────────────
+      
       case 'LT':
       case 'LEVANTAPENA':
         s = { ...s, turtle: { ...s.turtle, penDown: false } };
@@ -175,7 +175,7 @@ function exec(tokens: string[], startPos: number, state: InterpreterState, depth
         pos++;
         break;
 
-      // ── REPITA ────────────────────────────────────────────────────────────
+      
       case 'REPITA': {
         const count = Number(tokens[pos + 1]);
         if (isNaN(count)) return { state: s, pos, error: 'REPITA: esperava um número' };
@@ -193,7 +193,7 @@ function exec(tokens: string[], startPos: number, state: InterpreterState, depth
         break;
       }
 
-      // ── APRENDA ───────────────────────────────────────────────────────────
+      
       case 'APRENDA': {
         const name = tokens[pos + 1];
         if (!name || name === '[' || name === ']') {
@@ -208,13 +208,13 @@ function exec(tokens: string[], startPos: number, state: InterpreterState, depth
         if (p >= tokens.length) {
           return { state: s, pos, error: 'APRENDA: bloco não encerrado com FIM' };
         }
-        p++; // skip FIM
+        p++; 
         s = { ...s, procedures: { ...s.procedures, [name]: body } };
         pos = p;
         break;
       }
 
-      // ── User-defined procedures ───────────────────────────────────────────
+      
       default: {
         const proc = s.procedures[t];
         if (proc) {
@@ -232,7 +232,7 @@ function exec(tokens: string[], startPos: number, state: InterpreterState, depth
   return { state: s, pos };
 }
 
-// ─── Public API ───────────────────────────────────────────────────────────────
+
 
 export function runCommand(input: string, state: InterpreterState): RunResult {
   const tokens = tokenize(input.trim());
@@ -241,7 +241,7 @@ export function runCommand(input: string, state: InterpreterState): RunResult {
   const result = exec(tokens, 0, state, 0);
   if (result.error) return { state, error: result.error };
 
-  // Surface meaningful feedback for state-change commands
+  
   const cmd = tokens[0];
   let message: string | undefined;
 
@@ -258,7 +258,7 @@ export function runCommand(input: string, state: InterpreterState): RunResult {
   } else if (cmd === 'TAP') {
     message = 'Tartaruga oculta.';
   }
-  // For PF, PT, PD, PE, REPITA, and called procedures: canvas shows it, no message needed
+  
 
   return { state: result.state, message };
 }

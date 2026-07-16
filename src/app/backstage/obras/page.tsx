@@ -1,4 +1,4 @@
-// app/backstage/obras/page.tsx
+
 import Link from 'next/link';
 import { CATEGORIA_LABEL } from '../../obras/types';
 import { DeleteObraButton } from '@/components/ui/DeleteButton';

@@ -9,7 +9,7 @@ interface PaginacaoProps {
 export function Paginacao({ paginaAtual, totalPaginas, onMudar }: PaginacaoProps) {
   if (totalPaginas <= 1) return null;
 
-  // Build page number array with ellipsis
+  
   function getPages(): (number | '…')[] {
     if (totalPaginas <= 7) {
       return Array.from({ length: totalPaginas }, (_, i) => i + 1);

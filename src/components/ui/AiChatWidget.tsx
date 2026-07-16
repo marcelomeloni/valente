@@ -1,4 +1,4 @@
-// components/ui/AiChatWidget.tsx
+
 'use client';
 
 import { useState } from 'react';
@@ -51,7 +51,7 @@ export function AiChatWidget({ obraContext }: AiChatWidgetProps) {
       setResponse(result.answer);
       setStatus('answered');
     } catch (err) {
-      console.error('AI error:', err);
+      
       setResponse('Erro ao consultar a IA. Verifique se a GEMINI_API_KEY está configurada no backend.');
       setStatus('error');
     }

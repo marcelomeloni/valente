@@ -1,7 +1,7 @@
-// src/components/backstage/ObraForm.tsx
+
 'use client';
 
-import { useState, useEffect } from 'react';  // ← adiciona useEffect
+import { useState, useEffect } from 'react';  
 import { Step1Info } from './steps/Step1Info';
 import { Step2Details } from './steps/Step2Details';
 
@@ -38,7 +38,7 @@ export function ObraForm({ initialData, onSubmit, submitLabel = 'Salvar obra' }:
     arquivo:    initialData?.arquivo    ?? null,
   });
 
-  // ← sincroniza quando initialData chega de forma assíncrona
+  
   useEffect(() => {
     if (!initialData) return;
     setForm((prev) => ({

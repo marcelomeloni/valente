@@ -1,4 +1,4 @@
-// src/app/backstage/obras/[slug]/editar/page.tsx
+
 'use client';
 
 import { use, useEffect, useState } from 'react';
@@ -41,7 +41,7 @@ useEffect(() => {
       const obra = await obrasService.getBySlug(slug);
       setObraOriginal(obra);
     } catch (err) {
-      console.error(err);
+      
     } finally {
       setLoading(false);
     }
@@ -77,14 +77,14 @@ const initialData: Partial<ObraFormData> = {
     setIsSaving(true);
 
     try {
-      // ── 1. Upload do PDF (se anexou um novo) ──────────────────
+      
       let pdfUrl: string | null = obraOriginal.pdf || null;
       if (data.arquivo) {
         const uploadResult = await obrasService.uploadPdf(data.arquivo);
         pdfUrl = uploadResult.publicUrl;
       }
 
-      // ── 2. Resolver Autores ───────────────────────────────────
+      
       const allAutores = await autorService.getAll();
       const autorIds: number[] = [];
       for (const nomeAutor of data.autores) {
@@ -101,7 +101,7 @@ const initialData: Partial<ObraFormData> = {
         }
       }
 
-      // ── 3. Resolver Temas ─────────────────────────────────────
+      
       const allTemas = await temaService.getAll();
       const temaIds: number[] = [];
       for (const nomeTema of data.temas) {
@@ -118,7 +118,7 @@ const initialData: Partial<ObraFormData> = {
         }
       }
 
-      // ── 4. Atualizar obra ─────────────────────────────────────
+      
       const newSlug = generateSlug(data.titulo);
 
       await obrasService.update(obraOriginal.id, {
@@ -132,12 +132,12 @@ const initialData: Partial<ObraFormData> = {
         publicacao: data.publicacao || null,
       });
 
-      // TODO: Atualizar relações autores/temas (requer endpoint backend dedicado)
+      
 
       alert('Obra atualizada com sucesso!');
       router.push('/backstage/obras');
     } catch (err: any) {
-      console.error('Erro ao atualizar obra:', err);
+      
       alert('Erro ao atualizar. Verifique o console.');
     } finally {
       setIsSaving(false);

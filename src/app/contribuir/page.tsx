@@ -63,7 +63,7 @@ function ContribuirContent() {
       });
       setLoadingData(false);
     }).catch((err) => {
-      console.error('Falha ao carregar dados da submissão:', err);
+      
       setLoadingData(false);
     });
   }, [reenviarId]);
@@ -103,7 +103,7 @@ function ContribuirContent() {
 
       router.push('/contribuir/sucesso');
     } catch (err: any) {
-      console.error('Erro ao enviar submissão:', err);
+      
     } finally {
       setIsSaving(false);
     }

@@ -3,8 +3,8 @@ import { SubmissaoListItem, SubmissaoDetalhe } from '@/services/submissaoService
 import { STATUS_STYLE, STATUS_LABEL } from './SubmissaoRow';
 
 interface Props {
-  leve: SubmissaoListItem;               // dados imediatos da lista
-  completo: SubmissaoDetalhe | null;     // dados completos (chegam depois)
+  leve: SubmissaoListItem;               
+  completo: SubmissaoDetalhe | null;     
   loadingDetalhe: boolean;
   salvando: boolean;
   onClose: () => void;

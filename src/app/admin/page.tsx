@@ -5,7 +5,7 @@ import { autorService } from '@/services/autorService';
 import { temaService } from '@/services/temaService';
 
 export default async function AdminDashboardPage() {
-  // Chamada agregada robusta caso os bancos de dados estejam vazios ou offline
+  
   const [obras, admins, catalogadores, autores, temas] = await Promise.all([
     obrasService.getAll().catch(() => []),
     adminService.getAll().catch(() => []),

@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 const CW = 1400;
 const CH = 480;
 
-// All terms from Valente's research profile (Lattes/Unicamp)
+
 const WORDS = [
   { text: 'TECNOLOGIAS DA INFORMAÇÃO E COMUNICAÇÃO', weight: 10 },
   { text: 'INFORMÁTICA NA EDUCAÇÃO', weight: 8 },
@@ -80,7 +80,7 @@ const WORDS = [
   { text: 'MEDIAÇÃO', weight: 1 },
 ];
 
-// Color: unicamp red for highest weight, zinc gradient for the rest
+
 function getColor(weight: number): string {
   if (weight >= 8) return '#fd0002';
   if (weight >= 5) return '#18181b';
@@ -120,7 +120,7 @@ export function WordCloudCanvas() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Wait for fonts to load so measureText is accurate
+    
     document.fonts.ready.then(() => {
       ctx.clearRect(0, 0, CW, CH);
 
@@ -142,17 +142,17 @@ export function WordCloudCanvas() {
 
         let ok = false;
 
-        // Archimedean spiral — elliptical (wider than tall to match banner shape)
+        
         for (let r = 0; r <= Math.max(CW, CH) * 0.55; r += 1.8) {
           const steps = Math.max(1, Math.floor((2 * Math.PI * (r || 1)) / 8));
-          const angleOffset = r * 0.35; // rotate start angle per radius to avoid alignment
+          const angleOffset = r * 0.35; 
 
           for (let i = 0; i < steps; i++) {
             const angle = angleOffset + (i / steps) * 2 * Math.PI;
             const tx = cx + r * 2.6 * Math.cos(angle) - ww / 2;
             const ty = cy + r * 0.92 * Math.sin(angle) - wh / 2;
 
-            // Keep within canvas bounds with padding
+            
             if (tx < 2 || tx + ww > CW - 2 || ty < 2 || ty + wh > CH - 2) continue;
 
             const candidate: Placed = { x: tx, y: ty, w: ww, h: wh };
@@ -175,7 +175,7 @@ export function WordCloudCanvas() {
         }
       }
 
-      // Draw all words
+      
       for (const r of renders) {
         ctx.font = `600 ${r.fontSize}px Inter, Arial, sans-serif`;
         ctx.fillStyle = r.color;

@@ -12,28 +12,28 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!isLoading) {
       
-      // 1. Usuário NÃO está logado
+      
       if (!isAuthenticated) {
         if (pathname.startsWith("/admin")) {
           router.push("/login/admin");
         } else if (pathname.startsWith("/backstage")) {
           router.push("/login/backstage");
         }
-        // Se for rota pública ou de login, não faz nada (deixa renderizar)
+        
       } 
       
-      // 2. Usuário ESTÁ logado
+      
       else if (isAuthenticated && user) {
         
-        // A. Se tentar acessar qualquer tela de login, joga pro painel dele
+        
         if (pathname.startsWith("/login")) {
           if (user.role === "admin") router.push("/admin");
           else if (user.role === "catalogador") router.push("/backstage");
-          else router.push("/perfil"); // colaborador
+          else router.push("/perfil"); 
           return;
         }
 
-        // B. Bloqueio RBAC Hierárquico rigoroso (Cruza roles com as rotas)
+        
         if (pathname.startsWith("/admin") && user.role !== "admin") {
           router.push(user.role === "catalogador" ? "/backstage" : "/perfil");
         } else if (pathname.startsWith("/backstage") && user.role !== "catalogador") {
@@ -43,7 +43,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     }
   }, [isLoading, isAuthenticated, user, pathname, router]);
 
-  // Se a requisição de contexto estiver reidratando do localStorage / Supabase
+  
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-zinc-50">
@@ -57,18 +57,18 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // Se for a tela de login (não logado), destrava renderização visual do formulário.
+  
   if (pathname.startsWith("/login")) {
-    if (isAuthenticated) return null; // Previne "piscada" na tela antes do redirect rolar
+    if (isAuthenticated) return null; 
     return <>{children}</>;
   }
 
-  // Se não autenticado e NÃO for tela de login, trava renderização visual de tudo
+  
   if (!isAuthenticated) {
     return null;
   }
 
-  // Se a rota está blindada e o role não corresponde, trava renderização até redirecionar
+  
   if (isAuthenticated && user) {
     if (pathname.startsWith("/admin") && user.role !== "admin") return null;
     if (pathname.startsWith("/backstage") && user.role !== "catalogador") return null;

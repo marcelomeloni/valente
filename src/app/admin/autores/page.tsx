@@ -15,7 +15,7 @@ export default function AdminAutoresPage() {
     try {
       const data = await autorService.getAll();
       setAutores(data.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR')));
-    } catch (err) { console.error(err); }
+    } catch (err) {  }
     finally { setLoading(false); }
   }
 

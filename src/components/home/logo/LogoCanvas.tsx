@@ -5,8 +5,8 @@ import { InterpreterState } from './interpreter';
 
 export const CANVAS_SIZE = 600;
 
-// Aesthetic Config
-const LINE_COLOR = '#ef4444'; // Tailwind red-500
+
+const LINE_COLOR = '#ef4444'; 
 const TURTLE_COLOR = '#ffffff';
 const BG_COLOR = 'transparent';
 const GRID_COLOR = 'rgba(255, 255, 255, 0.04)';
@@ -23,7 +23,7 @@ function drawGrid(ctx: CanvasRenderingContext2D) {
     ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(CANVAS_SIZE, y); ctx.stroke();
   }
 
-  // Center Crosshairs
+  
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
   ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(CANVAS_SIZE / 2, 0); ctx.lineTo(CANVAS_SIZE / 2, CANVAS_SIZE); ctx.stroke();
@@ -35,7 +35,7 @@ function drawTurtle(ctx: CanvasRenderingContext2D, x: number, y: number, angle: 
   ctx.translate(x, y);
   ctx.rotate((angle * Math.PI) / 180);
 
-  // Turtle Body (Modern styling: sleek glowing triangle)
+  
   ctx.beginPath();
   ctx.moveTo(0, -12);
   ctx.lineTo(8, 10);
@@ -46,7 +46,7 @@ function drawTurtle(ctx: CanvasRenderingContext2D, x: number, y: number, angle: 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
   ctx.fill();
   
-  // Subtle glow
+  
   ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
   ctx.shadowBlur = 10;
   ctx.strokeStyle = TURTLE_COLOR;
@@ -72,13 +72,13 @@ export function LogoCanvas({ state }: LogoCanvasProps) {
     ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
     drawGrid(ctx);
 
-    // Ink Path Styling
+    
     ctx.strokeStyle = LINE_COLOR;
-    ctx.lineWidth = 2.5; // Slightly thicker
+    ctx.lineWidth = 2.5; 
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.shadowColor = LINE_COLOR;
-    ctx.shadowBlur = 4; // Glowing red ink
+    ctx.shadowBlur = 4; 
 
     ctx.beginPath();
     for (const line of state.lines) {
@@ -86,7 +86,7 @@ export function LogoCanvas({ state }: LogoCanvasProps) {
       ctx.lineTo(line.x2, line.y2);
     }
     ctx.stroke();
-    ctx.shadowBlur = 0; // reset shadow for turtle
+    ctx.shadowBlur = 0; 
 
     if (state.turtle.visible) {
       drawTurtle(ctx, state.turtle.x, state.turtle.y, state.turtle.angle);

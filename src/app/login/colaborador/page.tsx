@@ -10,7 +10,7 @@ export default function ColaboradorLoginPage() {
   const searchParams = useSearchParams();
   const { loginGoogle } = useAuth();
 
-  // Pega a intenção de redirecionamento da URL ou manda pro perfil por padrão
+  
   const redirect = searchParams.get("redirect") || "/perfil";
 
   const handleLogin = async () => {
@@ -18,7 +18,7 @@ export default function ColaboradorLoginPage() {
       setLoading(true);
       await loginGoogle(redirect);
     } catch (error) {
-      console.error("Erro na autenticação:", error);
+      
       setLoading(false);
     }
   };

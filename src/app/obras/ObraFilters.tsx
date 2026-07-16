@@ -47,7 +47,7 @@ export function ObraFilters({
   const [autoresExpanded, setAutoresExpanded] = useState(false);
   const [categoriasExpanded, setCategoriasExpanded] = useState(false);
 
-  // Categorias ordenadas por frequência
+  
   const categoriasOrdenadas = useMemo(() => {
     const freq: Record<string, number> = {};
     obras.forEach((o) => { freq[o.categoria] = (freq[o.categoria] || 0) + 1; });
@@ -55,7 +55,7 @@ export function ObraFilters({
       .filter(c => c.value !== 'todas')
       .filter(c => freq[c.value] && freq[c.value] > 0)
       .sort((a, b) => (freq[b.value] || 0) - (freq[a.value] || 0));
-    return [CATEGORIAS[0], ...sorted]; // 'Todas' always first
+    return [CATEGORIAS[0], ...sorted]; 
   }, [obras]);
 
   function setCategoria(v: ObraCategoria | 'todas') {
@@ -89,7 +89,7 @@ export function ObraFilters({
     (filters.anoMin ? 1 : 0) +
     (filters.anoMax ? 1 : 0);
 
-  // --- Helpers to show 5 items + selected ones by default ---
+  
   const visibleTemas = temasExpanded
     ? temasDisponiveis
     : temasDisponiveis.slice(0, ITEMS_VISIBLE_DEFAULT).concat(
@@ -360,7 +360,7 @@ export function ObraFilters({
   );
 }
 
-// ── Sub-components ────────────────────────────────────────────────────────────
+
 
 function FilterSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (

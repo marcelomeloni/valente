@@ -17,9 +17,9 @@ export function DeleteObraButton({ id, slug, titulo }: Props) {
 
     try {
       await obrasService.delete(id);
-      router.refresh(); // revalida a tabela sem reload completo
+      router.refresh(); 
     } catch (err) {
-      console.error('Erro ao deletar obra:', err);
+      
       alert('Erro ao excluir a obra. Verifique o console.');
     }
   };
