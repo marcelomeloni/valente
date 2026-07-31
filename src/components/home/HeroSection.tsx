@@ -73,7 +73,7 @@ export function HeroSection() {
 
           <motion.div variants={itemVariants} className="flex flex-col gap-3 mt-4">
             <h2 className="text-xl font-semibold tracking-wide text-zinc-300 sm:text-2xl">
-              Professor Titular da Unicamp, NIED/IMECC
+              Professor Titular da Unicamp, NIED/Instituto de Artes
             </h2>
             <p className="text-lg text-zinc-400 font-light leading-relaxed max-w-xl">
               Pioneiro da Informática na Educação e do Construcionismo no Brasil. Uma vida dedicada a transformar como a tecnologia molda a aprendizagem.
